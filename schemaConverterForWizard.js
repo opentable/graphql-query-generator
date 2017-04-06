@@ -62,9 +62,9 @@ function magiclyExtractFieldTypeName(field) {
   return typeName;
 }
 
-function buildQueryTreeFromField(field, typeDictionary, skipped = []) {
-  const fieldTypeName = magiclyExtractFieldTypeName(field);//field.type.ofType !== null ? field.type.ofType.name : field.type.name;
-  const fieldTypeDefinition = typeDictionary[fieldTypeName]; //graphql.getNamedType(field.type);
+module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped = []) {
+  const fieldTypeName = magiclyExtractFieldTypeName(field);
+  const fieldTypeDefinition = typeDictionary[fieldTypeName];
 
   if (fieldTypeDefinition.fields === null) { // isLeafType
     return field.name;
@@ -79,7 +79,7 @@ function buildQueryTreeFromField(field, typeDictionary, skipped = []) {
   const allFields = getFields(field, typeDictionary);
 
   _.forIn(allFields, (childField) => {
-    const childFieldTypeName = magiclyExtractFieldTypeName(childField);//childField.name;//childField.type.ofType !== null ? childField.type.ofType.name : childField.type.name;
+    const childFieldTypeName = magiclyExtractFieldTypeName(childField);
     const childFieldType = typeDictionary[childFieldTypeName];
 
     if (skipped.indexOf(childFieldType.name) === -1) {
@@ -93,39 +93,3 @@ function buildQueryTreeFromField(field, typeDictionary, skipped = []) {
 
   return queryNode;
 }
-
-function queryTreeToGraphQLString(tree) {
-  let output = '';
-
-  if (_.isObject(tree) && !_.isArray(tree)) {
-    _.forIn(tree, (value, key) => {
-      output += `${key} { ${queryTreeToGraphQLString(value)} }`;
-    });
-  }
-
-  if (_.isArray(tree)) {
-    _.map(tree, (item) => {
-      output += `${queryTreeToGraphQLString(item)} `;
-    });
-  }
-
-  if (_.isString(tree)) {
-    output = `${tree}`;
-  }
-
-  return output;
-}
-
-module.exports.schemaToQueries = function (typeDictionary) {
-  const queries = [];
-
-  _.forIn(typeDictionary['Root'].fields, (field) => {
-    const queryTree = buildQueryTreeFromField(field, typeDictionary);
-
-    if (queryTree !== null) {
-      queries.push(`{ ${queryTreeToGraphQLString(queryTree)} }`);
-    }
-  });
-
-  return queries;
-};

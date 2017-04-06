@@ -1,5 +1,8 @@
 module.exports = `{
   __schema{
+    queryType {
+      name
+    }
     types {
       name
       kind
