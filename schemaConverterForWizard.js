@@ -1,15 +1,6 @@
 const _ = require('lodash');
 const graphql = require('graphql');
-
-function getExamplesFrom(comment) {
-  if(!comment) {
-    return [];
-  }
-  const prefix = 'Examples:';
-  const examples = comment
-    .substring(comment.indexOf(prefix)).split('\n').slice(1).map(_.trim).filter(x=>x.length)[0];
-  return examples ? [examples] : [];
-}
+const getExamplesFrom = require('./descriptionParser')
 
 function isNotNullable(arg) {
   const argType = arg.type.kind;
@@ -32,6 +23,21 @@ function getFields(field, typeDictionary) {
   return _.filter(allFields, childField => !_.some(childField.args, isNotNullable));
 }
 
+/**
+ * @example
+ *   getKeys({name: 'Name', args: []}) // => ['Name']
+ *   getKeys({
+ *    name: 'People',
+ *    args: [{type:{kind: 'NON_NULL'}}],
+ *    description: 'Examples: People(test: 1)'
+ *   }) 
+ *   // => ['People(test: 1)']
+ *   getKeys({
+ *    name: 'People',
+ *    args: [{type:{kind: 'NULL'}}]
+ *   }) 
+ *   // => ['People']
+ */
 function getKeys(field) {
   if (field.args.length === 0) {
     return [field.name];

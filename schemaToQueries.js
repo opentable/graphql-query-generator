@@ -7,6 +7,10 @@ module.exports = function schemaToQueries (rootName, schema) {
 
   _.forIn(schema[rootName].fields, (field) => {
     const queryTree = buildQueryTreeFromField(field, schema);
+    
+    console.log('||||||||||||||||||||||||||||||||||');
+    console.dir(queryTree);
+    console.log('||||||||||||||||||||||||||||||||||');
 
     if (queryTree !== null) {
       queries.push(`{ ${queryTreeToGraphQLString(queryTree)} }`);

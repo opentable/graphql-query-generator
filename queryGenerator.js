@@ -2,7 +2,7 @@ const introspectionQuery = require('./introspectionQuery');
 const query = require('./graphqlClient');
 const schemaToQueries = require('./schemaToQueries');
 
-module.exports = function Wizard(url) {
+module.exports = function QueryGenerator(url) {
   function buildTypeDictionary(__schema) {
     let result = {};
     __schema.types.forEach(type => result[type.name] = type);

@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run jsdoctest",
+    "jsdoctest": "mocha --require jsdoctest `find -name \"*.js\"`"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,9 @@
   "homepage": "https://github.com/opentable/graphql-query-generator#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "jsdoctest": "^1.7.0",
+    "mocha": "^3.2.0",
+    "swapi-graphql": "0.0.6"
   },
   "dependencies": {
     "fetch": "^1.1.0",
