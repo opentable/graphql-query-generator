@@ -1,9 +1,8 @@
 const introspectionQuery = require('./introspectionQuery');
 const query = require('./graphqlClient');
+const schemaToQueries = require('./schemaToQueries');
 
-module.exports = function Wizard(topMostStuff, url) {
-  const schemaConverter = require('./schemaConverterForWizard');
-
+module.exports = function Wizard(url) {
   function buildTypeDictionary(__schema) {
     let result = {};
     __schema.types.forEach(type => result[type.name] = type);
@@ -15,7 +14,7 @@ module.exports = function Wizard(topMostStuff, url) {
       .then((res) => res.json())
       .then(result => {
         try {
-          const queries = schemaConverter.schemaToQueries(buildTypeDictionary(result.data['__schema']));
+          const queries = schemaToQueries(result.data['__schema'].queryType.name, buildTypeDictionary(result.data['__schema']));
           queries.forEach(query => {
             console.log(query);
             console.log('=========================');
