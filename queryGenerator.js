@@ -15,10 +15,6 @@ module.exports = function QueryGenerator(url) {
       .then(result => {
         try {
           const queries = schemaToQueries(result.data['__schema'].queryType.name, buildTypeDictionary(result.data['__schema']));
-          queries.forEach(query => {
-            console.log(query);
-            console.log('=========================');
-          });
           return queries;
         }
         catch (ex) {
