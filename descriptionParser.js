@@ -1,14 +1,4 @@
-const _ = require('lodash');
-//const test = new RegExp(/Example[s]?:\s*(\s*(?:([_A-Za-z][_0-9A-Za-z]*)\s*\(([^\)])*\))\s*)+/);  
 const examplesSection = new RegExp(/Example[s]?:/);
-
-/*
-['Examples:', 'Examples: ','Examples:\n', 'Example:']
-   .forEach(exampleStartSection => 
-    ['country(cId: 1)', 'country (cId: 1)', 'country (cId:1)',
-    'country (cId :1)', 'country (\ncId :1\n)']
-*/
-
 
 /**
  * @example
@@ -34,6 +24,7 @@ module.exports = function getExamplesFrom(comment) {
   let result = [];
   let matches = null;
   const test = new RegExp(/(\s*([_A-Za-z]\w*)\s*\([^)]*\)\s*)/g);
+  // Forgive me
   while( (matches = test.exec(examplesDescription)) && matches.length > 1)
   {
     result.push(matches[1].trim());

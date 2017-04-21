@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const graphql = require('graphql');
-const getExamplesFrom = require('./descriptionParser')
+const getExamplesFrom = require('./descriptionParser');
 
 function isNotNullable(arg) {
   const argType = arg.type.kind;

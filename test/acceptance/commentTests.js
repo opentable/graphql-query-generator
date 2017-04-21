@@ -1,18 +1,20 @@
+const should = require('chai').should();
 const app = require('./exampleServer');
-const queryGenerator = require('../../queryGenerator');
+const QueryGenerator = require('../../queryGenerator');
 
-describe('test', () => {
+describe('Query generation', () => {
+
+  const serverUrl = 'http://localhost:12345/graphql';
 
   before(() => app);
 
-  it('1', () => {
+  it('Generates multiple quieries', () => {
     
-    var thing = new queryGenerator('http://localhost:12345/graphql')
+    const queryGenerator = new QueryGenerator(serverUrl);
     
-    return thing.run()
+    return queryGenerator.run()
         .then(x => {
-            console.log('robert test');
-            console.dir(x)
+          (x[0].match(/rollDice/g) || []).length.should.equal(4);
         });
       
   });
