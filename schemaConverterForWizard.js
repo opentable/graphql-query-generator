@@ -73,6 +73,10 @@ function magiclyExtractFieldTypeName(field) {
   return typeName;
 }
 
+function getSkipKey(fieldTypeDefinition, field) {
+  return `${field.name}-${fieldTypeDefinition.name}`;
+}
+
 module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped = []) {
   const fieldTypeName = magiclyExtractFieldTypeName(field);
   const fieldTypeDefinition = typeDictionary[fieldTypeName];
@@ -82,7 +86,7 @@ module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped
   }
 
   if (fieldTypeDefinition.kind === 'OBJECT') {
-    skipped.push(fieldTypeDefinition.name);
+    skipped.push(getSkipKey(fieldTypeDefinition, field));
   }
 
   let queryNode = null;
@@ -93,7 +97,7 @@ module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped
     const childFieldTypeName = magiclyExtractFieldTypeName(childField);
     const childFieldType = typeDictionary[childFieldTypeName];
 
-    if (skipped.indexOf(childFieldType.name) === -1) {
+    if (skipped.indexOf(getSkipKey(childFieldType, childField)) === -1) {
       keyNames.forEach((keyName) => {
         queryNode = queryNode || {};
         queryNode[keyName] = queryNode[keyName] || [];

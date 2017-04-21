@@ -24,6 +24,7 @@ var schema = buildSchema(`
     # +NOFOLLOW
     ignoredWithExamples(parameter: Int!): IgnoredSubtype
 
+    # +NOFOLLOW
     ignoredNoParameters: IgnoredSubtype
   }
 
