@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "npm run jsdoctest",
+    "test": "npm run jsdoctest && mocha test/**/*.js",
     "jsdoctest": "mocha --require jsdoctest `find -name \"*.js\"`"
   },
   "repository": {

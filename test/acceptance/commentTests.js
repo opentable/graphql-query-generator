@@ -5,18 +5,28 @@ const QueryGenerator = require('../../queryGenerator');
 describe('Query generation', () => {
 
   const serverUrl = 'http://localhost:12345/graphql';
+  let queries = null;
 
-  before(() => app);
+  before(() => app.then(()=>{
+    const queryGenerator = new QueryGenerator(serverUrl);
+    queries = queryGenerator.run();
+  }));
 
   it('Generates multiple quieries', () => {
-    
-    const queryGenerator = new QueryGenerator(serverUrl);
-    
-    return queryGenerator.run()
+    return queries
         .then(x => {
           (x[0].match(/rollDice/g) || []).length.should.equal(4);
         });
       
+  });
+
+  it('Ignores fields with +NOFOLLOW in description', () => {
+    return queries
+      .then(x => {
+        (x[0].match(/ignoredWithExamples/g) || []).length.should.equal(0);
+        (x[0].match(/ignoredNoParameters/g) || []).length.should.equal(0);
+      });
+
   });
 
 });

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const graphql = require('graphql');
-const getExamplesFrom = require('./descriptionParser');
+const { getExamplesFrom, shouldFollow } = require('./descriptionParser');
 
 function isNotNullable(arg) {
   const argType = arg.type.kind;
@@ -20,7 +20,8 @@ function isNotNullable(arg) {
 function getFields(field, typeDictionary) {
   const typeName = magiclyExtractFieldTypeName(field);
   const allFields = typeDictionary[typeName].fields;
-  return _.filter(allFields, childField => !_.some(childField.args, isNotNullable));
+  // return _.filter(allFields, childField => !_.some(childField.args, isNotNullable));
+  return allFields;
 }
 
 /**
@@ -39,6 +40,10 @@ function getFields(field, typeDictionary) {
  *   // => ['People']
  */
 function getKeys(field) {
+  if(!shouldFollow(field.description)) {
+    return [];
+  }
+
   if (field.args.length === 0) {
     return [field.name];
   }
@@ -98,4 +103,4 @@ module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped
   });
 
   return queryNode;
-}
+};

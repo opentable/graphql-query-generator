@@ -18,3 +18,4 @@
  * example are needed, I think, only when you have mandatory parameters
  * opt-out functionality
  * reporting uncovered branches
+ * when there are two fields of the same type in a query should one of them really be ignored? maybe we need to change how key is calculated
