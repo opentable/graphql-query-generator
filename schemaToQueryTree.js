@@ -1,15 +1,6 @@
 const _ = require('lodash');
 const graphql = require('graphql');
-
-function getExamplesFrom(comment) {
-  if(!comment) {
-    return [];
-  }
-  const prefix = 'Examples:';
-  const examples = comment
-    .substring(comment.indexOf(prefix)).split('\n').slice(1).map(_.trim).filter(x=>x.length)[0];
-  return examples ? [examples] : [];
-}
+const { getExamplesFrom, shouldFollow } = require('./descriptionParser');
 
 function isNotNullable(arg) {
   const argType = arg.type.kind;
@@ -29,10 +20,30 @@ function isNotNullable(arg) {
 function getFields(field, typeDictionary) {
   const typeName = magiclyExtractFieldTypeName(field);
   const allFields = typeDictionary[typeName].fields;
-  return _.filter(allFields, childField => !_.some(childField.args, isNotNullable));
+  // return _.filter(allFields, childField => !_.some(childField.args, isNotNullable));
+  return allFields;
 }
 
+/**
+ * @example
+ *   getKeys({name: 'Name', args: []}) // => ['Name']
+ *   getKeys({
+ *    name: 'People',
+ *    args: [{type:{kind: 'NON_NULL'}}],
+ *    description: 'Examples: People(test: 1)'
+ *   }) 
+ *   // => ['People(test: 1)']
+ *   getKeys({
+ *    name: 'People',
+ *    args: [{type:{kind: 'NULL'}}]
+ *   }) 
+ *   // => ['People']
+ */
 function getKeys(field) {
+  if(!shouldFollow(field.description)) {
+    return [];
+  }
+
   if (field.args.length === 0) {
     return [field.name];
   }
@@ -62,6 +73,10 @@ function magiclyExtractFieldTypeName(field) {
   return typeName;
 }
 
+function getSkipKey(fieldTypeDefinition, field) {
+  return `${field.name}-${fieldTypeDefinition.name}`;
+}
+
 module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped = []) {
   const fieldTypeName = magiclyExtractFieldTypeName(field);
   const fieldTypeDefinition = typeDictionary[fieldTypeName];
@@ -71,7 +86,7 @@ module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped
   }
 
   if (fieldTypeDefinition.kind === 'OBJECT') {
-    skipped.push(fieldTypeDefinition.name);
+    skipped.push(getSkipKey(fieldTypeDefinition, field));
   }
 
   let queryNode = null;
@@ -82,7 +97,7 @@ module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped
     const childFieldTypeName = magiclyExtractFieldTypeName(childField);
     const childFieldType = typeDictionary[childFieldTypeName];
 
-    if (skipped.indexOf(childFieldType.name) === -1) {
+    if (skipped.indexOf(getSkipKey(childFieldType, childField)) === -1) {
       keyNames.forEach((keyName) => {
         queryNode = queryNode || {};
         queryNode[keyName] = queryNode[keyName] || [];
@@ -92,4 +107,4 @@ module.exports = function buildQueryTreeFromField(field, typeDictionary, skipped
   });
 
   return queryNode;
-}
+};

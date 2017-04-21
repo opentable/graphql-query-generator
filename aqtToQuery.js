@@ -1,10 +1,19 @@
 const _ = require('lodash');
+
+/**
+ * @example
+ *   module.exports('name') // => 'name'
+ *   module.exports(['name', 'surname', 'age']) // => 'name surname age '
+ *   module.exports({ people: 'name', countries: ['flag']}) // => 'q42: people { name }q43: countries { flag  }'
+ */
 module.exports = function queryTreeToGraphQLString(tree) {
   let output = '';
 
   if (_.isObject(tree) && !_.isArray(tree)) {
+    let index = 42;
     _.forIn(tree, (value, key) => {
-      output += `${key} { ${queryTreeToGraphQLString(value)} }`;
+      output += `q${index}: ${key} { ${queryTreeToGraphQLString(value)} }`;
+      index++;
     });
   }
 
@@ -19,5 +28,5 @@ module.exports = function queryTreeToGraphQLString(tree) {
   }
 
   return output;
-}
+};
 

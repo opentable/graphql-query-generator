@@ -1,5 +1,5 @@
 const queryTreeToGraphQLString = require('./aqtToQuery');
-const buildQueryTreeFromField = require('./schemaConverterForWizard');
+const buildQueryTreeFromField = require('./schemaToQueryTree');
 const _ = require('lodash');
 
 module.exports = function schemaToQueries (rootName, schema) {

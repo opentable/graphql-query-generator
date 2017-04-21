@@ -1,7 +1,7 @@
 const QueryGenerator = require('../queryGenerator');
-const assert = require('chai').assert;;
+const assert = require('chai').assert;
 
-describe('this is a base test', () => {
+describe.skip('this is a base test', () => {
   const queryGenerator = new QueryGenerator('http://localhost:56097/');
 
   it('should pass', () => {
