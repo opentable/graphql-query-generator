@@ -1,6 +1,6 @@
 const should = require('chai').should();
 const app = require('./exampleServer');
-const QueryGenerator = require('../../queryGenerator');
+const QueryGenerator = require('../../lib/queryGenerator');
 
 describe('Query generation', () => {
 
