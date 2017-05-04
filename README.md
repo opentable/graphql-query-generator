@@ -1,4 +1,4 @@
-
+![badge](https://graphql-query-generator.visualstudio.com/_apis/public/build/definitions/091bfe98-4175-4ef4-b7d5-8bbfa6f62a13/1/badge)
  * Add simple acceptance test with schema
  * Proper access to the code ??
     * Define proper usage of this tool
