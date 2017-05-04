@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "npm run jsdoctest && mocha test/**/*.js",
-    "jsdoctest": "mocha --require jsdoctest `find -name \"*.js\"`"
+    "jsdoctest": "mocha --require jsdoctest"
   },
   "repository": {
     "type": "git",
