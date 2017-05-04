@@ -2,7 +2,7 @@
   "name": "graphql-query-generator",
   "version": "0.0.1",
   "description": "* Add simple acceptance test with schema  * Clean up code  * Proper access to the code ??     * Define proper usage of this tool  * Get Ice Cream",
-  "main": "queryGenerator.js",
+  "main": "index.js",
   "bin": {"gql-query-generator": "./cli.js"},
   "directories": {
     "test": "tests"

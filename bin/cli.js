@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 process.title = 'gql-query-generator';
 
-const QueryGenerator = require('./queryGenerator');
+const QueryGenerator = require('../lib/queryGenerator');
 
 const serverUrl = process.argv[2];
 const queryGenerator = new QueryGenerator(serverUrl);
