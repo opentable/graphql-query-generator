@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Generates queries from the GraphQL endpoint via schema introspection.",
   "main": "index.js",
-  "bin": {"gql-query-generator": "./cli.js"},
+  "bin": {
+    "gql-query-generator": "./cli.js"
+  },
   "directories": {
     "test": "tests"
   },
@@ -30,6 +32,8 @@
     "swapi-graphql": "0.0.6"
   },
   "dependencies": {
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
     "fetch": "^1.1.0",
     "graphql": "^0.9.2",
     "lodash": "^4.17.4",

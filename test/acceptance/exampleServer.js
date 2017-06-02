@@ -34,7 +34,7 @@ var schema = buildSchema(`
     # Examples:
     # rollDice(numDice: 4, numSides: 2)
     # rollDice( numDice : 40 , numSides:2)
-    # rollDice ( numDice: 123 , numSides: 299 )
+    # rollDice ( numDice: 'asdf' , numSides: 299 )
     # rollDice (
     #   numDice:4,
     #   numSides: 2342
