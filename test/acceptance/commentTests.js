@@ -12,7 +12,7 @@ describe('Query generation', () => {
     queries = queryGenerator.run();
   }));
 
-  it('Generates multiple quieries', () => {
+  it('Generates multiple queries', () => {
     return queries
         .then(x => {
           (x[0].match(/rollDice/g) || []).length.should.equal(4);

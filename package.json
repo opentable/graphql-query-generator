@@ -1,7 +1,7 @@
 {
   "name": "graphql-query-generator",
   "version": "0.0.1",
-  "description": "* Add simple acceptance test with schema  * Clean up code  * Proper access to the code ??     * Define proper usage of this tool  * Get Ice Cream",
+  "description": "Generates queries from the GraphQL endpoint via schema introspection.",
   "main": "index.js",
   "bin": {"gql-query-generator": "./cli.js"},
   "directories": {
@@ -9,14 +9,14 @@
   },
   "scripts": {
     "test": "npm run jsdoctest && mocha test/**/*.js",
-    "jsdoctest": "mocha --require jsdoctest"
+    "jsdoctest": "mocha --require jsdoctest lib/"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/opentable/graphql-query-generator.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Piotr Bazydlo <piotr.bazydlo@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/opentable/graphql-query-generator/issues"
