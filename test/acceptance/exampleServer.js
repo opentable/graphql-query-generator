@@ -7,16 +7,16 @@ var schema = buildSchema(`
   type IgnoredSubtype {
     aValue: Int
   }
-  
+
   type RandomnessStatistics {
     explanation: String!
   }
-  
+
   type RandomDie {
     numSides: Int!
     rollOnce: Int!
     statistics(page: Int!): RandomnessStatistics!
-    
+
     # A description for ignored field with parameters
     #
     # Examples:
@@ -25,7 +25,7 @@ var schema = buildSchema(`
     ignoredWithExamples(parameter: Int!): IgnoredSubtype
 
     # +NOFOLLOW
-    ignoredNoParameters: Ig noredSubtype
+    ignoredNoParameters: IgnoredSubtype
   }
 
   type Query {
