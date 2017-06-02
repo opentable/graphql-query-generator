@@ -45,7 +45,7 @@ queryGenerator.run()
             }
             
             if (program.verbose) {
-              console.log(query);
+              console.log(chalk.grey(query));
             }
             
             process.stdout.write('.');
@@ -68,10 +68,10 @@ queryGenerator.run()
         return process.exit(1);
       }
       
-      console.log(chalk.bold.green(`All ${failedTests+passedTests} tests passed.`))
+      console.log(chalk.bold.green(`\nAll ${failedTests+passedTests} tests passed.`))
     });
   })
-  .catch((error) => console.log(chalk.red(`Failed to get queries from server:\n${error}`)));
+  .catch((error) => console.log(chalk.red(`\nFailed to get queries from server:\n${error}`)));
 
 
 function maybeSerialisePromises(promises) {
