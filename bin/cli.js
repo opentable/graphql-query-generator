@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const graphQlClient = require('../lib/graphqlClient');
-const colors = require('colors');
+const chalk = require('chalk');
 process.title = 'gql-query-generator';
 
 var program = require('commander');
@@ -14,6 +14,7 @@ program
      serverUrl = url;
   })
   .option('-v, --verbose', 'Displays all the query information')
+  .option('-p, --parallel', 'Executes all queries in parallel')
   .parse(process.argv);
 
   
@@ -23,27 +24,18 @@ if(serverUrl===null ) {
   process.exit(1);
 }
 
-// colors.setTheme({
-//   silly: 'rainbow',
-//   input: 'grey',
-//   verbose: 'cyan',
-//   prompt: 'grey',
-//   info: 'green',
-//   data: 'grey',
-//   help: 'cyan',
-//   warn: 'yellow',
-//   debug: 'blue',
-//   error: 'red'
-// });
-
 const QueryGenerator = require('../lib/queryGenerator');
 
 const queryGenerator = new QueryGenerator(serverUrl);
+
+let failedTests = 0;
+let passedTests = 0;
+
 queryGenerator.run()
   .then(queries => {
     console.log(`Fetched ${queries.length} queries, get to work!`);
     
-    return Promise.all(
+    return maybeSerialisePromises(
       queries.map(query => 
         graphQlClient(serverUrl, query)
           .then((res) => res.json())
@@ -57,17 +49,43 @@ queryGenerator.run()
             }
             
             process.stdout.write('.');
+            passedTests++;
           })
           .catch((result) => {
-            console.log('FAIL'.error);
+            console.log(chalk.red('FAIL'));
             if(result.errors) {
-              console.log('There were some errors:\n');
+              console.log('Following errors occured:\n');
               result.errors.forEach(err => console.log(err.message));
               console.log('');
             }
-            console.log('Full query:\n',query);
+            console.log(chalk.grey('Full query:\n',query));
+            failedTests++;
           })
       )
-    ).then(() => console.log(colors.green('all done')));
+    ).then(() => {
+      if(failedTests > 0) {
+        console.log(chalk.bold.red(`${failedTests}/${failedTests + passedTests} queries failed.`));
+        return process.exit(1);
+      }
+      
+      console.log(chalk.bold.green(`All ${failedTests+passedTests} tests passed.`))
+    });
   })
-  .catch((error) => console.log(`Failed to get queries from server:\n${error}`));
+  .catch((error) => console.log(chalk.red(`Failed to get queries from server:\n${error}`)));
+
+
+function maybeSerialisePromises(promises) {
+  if(program.parallel) {
+    return Promise.all(promises);
+  }
+  
+  if(promises.length > 1) {
+    return promises[0].then(() => 
+      maybeSerialisePromises(promises.slice(1))
+      );
+  } else if (promises.length === 1) {
+    return promises[0];
+  }
+  
+  return Promise.resolve();
+}
