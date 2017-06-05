@@ -84,10 +84,10 @@ function requestToGraphQL(serverUrl, query) {
     });
   });
 }
+```
 
 This is an example of a test that will just check that it returns HTTP status code 200!  It would be also good to check if, say, the body contains an error section.  However, it's all up to you!
 
-```
 
 ## Extras
 
