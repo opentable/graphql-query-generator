@@ -109,7 +109,7 @@ type RandomDie {
   ignoredWithExamples(parameter: Int!): IgnoredSubtype
 
   # +NOFOLLOW
-  ignoredNoParameters: Ig noredSubtype
+  ignoredNoParameters: IgnoredSubtype
 }
 ```
 
