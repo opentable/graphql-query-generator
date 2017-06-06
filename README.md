@@ -8,7 +8,7 @@ So you want to test your GraphQL endpoint.  This tool will generate all the quer
 
 ### 1. Annotate your queries (optional, although highly recommended):
 Create example queries that you want tested in the comments!
-```
+```graphql
 type Query {
   # RollDice has four examples
   #
@@ -95,7 +95,7 @@ This is an example of a test that will just check that it returns HTTP status co
 
 When annotating, if you add `+NOFOLLOW` in examples will prevent this path from being followed when creating queries
 
-```
+```graphql
 type RandomDie {
   numSides: Int!
   rollOnce: Int!
