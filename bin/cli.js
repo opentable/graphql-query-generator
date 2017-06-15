@@ -71,7 +71,9 @@ queryGenerator.run()
       console.log(chalk.bold.green(`\nAll ${failedTests+passedTests} tests passed.`))
     });
   })
-  .catch((error) => console.log(chalk.red(`\nFailed to get queries from server:\n${error}`)));
+  .catch((error) => {
+    console.log(chalk.red(`\nFailed to get queries from server:\n${error}`));
+  });
 
 
 function maybeSerialisePromises(promises) {
