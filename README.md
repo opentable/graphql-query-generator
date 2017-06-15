@@ -1,4 +1,4 @@
-![badge](https://graphql-query-generator.visualstudio.com/_apis/public/build/definitions/091bfe98-4175-4ef4-b7d5-8bbfa6f62a13/1/badge)
+[![build](https://api.travis-ci.org/opentable/graphql-query-generator.svg?branch=master)](https://travis-ci.org/opentable/graphql-query-generator)
 
 # GraphQL Query Generator
 GraphQL Query Generator is a library/tool that helps you easily test your GraphQL endpoints using introspection!
