@@ -55,7 +55,7 @@ queryGenerator.run()
             console.log(chalk.red('FAIL'));
             if(result.errors) {
               console.log('Following errors occured:\n');
-              result.errors.forEach(err => console.log(err.message));
+              result.errors.forEach(err => console.log(err.message + '\n\tPath: ' + err.path.join('.')));
               console.log('');
             }
             console.log(chalk.grey('Full query:\n',query));
