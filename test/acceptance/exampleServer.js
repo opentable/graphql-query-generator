@@ -17,6 +17,12 @@ var schema = buildSchema(`
     rollOnce: Int!
     statistics(page: Int!): RandomnessStatistics!
 
+    # Scalar field with non nullable arg and example section
+    # Examples:
+    # rollXTimes(times: 10)
+    # rollXTimes(times: 11)
+    rollXTimes(times: Int!): Int!
+
     # A description for ignored field with parameters
     #
     # Examples:
@@ -59,6 +65,7 @@ class RandomDie {
   constructor() {
     this.numSides = 4;  // chosen by fair dice roll
     this.rollOnce = 1;  // guaranteed to be random
+    this.rollXTimes = () => 12;
     this.statistics = () => new RandomnessStatistics();
     this.ignoredWithExamples = () => new IgnoredSubtype();
     this.ignoredNoParameters = () => new IgnoredSubtype();
