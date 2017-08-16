@@ -26,7 +26,14 @@ describe('Query generation', () => {
         (x[0].match(/ignoredWithExamples/g) || []).length.should.equal(0);
         (x[0].match(/ignoredNoParameters/g) || []).length.should.equal(0);
       });
+  });
 
+  it('Uses Examples section for scalar fields with non-nullable args', () => {
+    return queries
+      .then(x => {
+        // 8 because we have two examples for rollXTimes and 4 examples of parent
+        (x[0].match(/rollXTimes\(times. [0-9]+\)/g) || []).length.should.equal(8);
+      });
   });
 
 });
