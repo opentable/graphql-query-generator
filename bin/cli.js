@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 const graphQlClient = require('../lib/graphqlClient');
 const chalk = require('chalk');
+const retry = require('../lib/cli/retryHelper').retry;
 process.title = 'gql-query-generator';
 
-var program = require('commander');
+let program = require('commander');
 
 let serverUrl = null;
 
@@ -15,6 +16,8 @@ program
   })
   .option('-v, --verbose', 'Displays all the query information')
   .option('-p, --parallel', 'Executes all queries in parallel')
+  .option('-r, --retryCount <n>', 'Number of times to retry the query generator if it fails', parseInt)
+  .option('-t, --retrySnoozeTime <n>', 'Time in milliseconds to wait before retries', parseInt)
   .parse(process.argv);
 
 
@@ -30,8 +33,10 @@ const queryGenerator = new QueryGenerator(serverUrl);
 
 let failedTests = 0;
 let passedTests = 0;
+let retryCount = program.retryCount || 0;
+let retrySnoozeTime = program.retrySnoozeTime || 1000;
 
-queryGenerator.run()
+retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
   .then(queries => {
     console.log(`Fetched ${queries.length} queries, get to work!`);
 
@@ -75,7 +80,6 @@ queryGenerator.run()
     console.log(chalk.red(`\nFailed to get queries from server:\n${error}`));
     return process.exit(1);
   });
-
 
 function maybeSerialisePromises(promises) {
   if(program.parallel) {
