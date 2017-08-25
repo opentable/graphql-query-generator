@@ -17,7 +17,7 @@ program
   .option('-v, --verbose', 'Displays all the query information')
   .option('-p, --parallel', 'Executes all queries in parallel')
   .option('-r, --retry <n>', 'Number of times to retry the query generator if it fails', parseInt)
-  .option('-t, --timeout <n>', 'Time in milliseconds to wait before retries', parseInt)
+  .option('-t, --retrySnoozeTime <n>', 'Time in milliseconds to wait before retries', parseInt)
   .parse(process.argv);
 
 
@@ -34,7 +34,7 @@ const queryGenerator = new QueryGenerator(serverUrl);
 let failedTests = 0;
 let passedTests = 0;
 let retryCount = program.retry || 0;
-let timeout = program.timeout || 0;
+let timeout = program.retrySnoozeTime || 1000;
 
 retry(() => queryGenerator.run(), retryCount, timeout)
   .then(queries => {
