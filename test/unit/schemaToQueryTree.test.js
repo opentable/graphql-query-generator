@@ -34,6 +34,21 @@ describe('Build query tree from field', () => {
                     { name: 'DeepNest', type: { name: 'DeeplyNestedObject' }, args: [] },
                     { name: 'NotSoDeepNest', type: { name: 'ObjectField' }, args: [] }
                 ]
+            },
+            DeeplyNestedObject2: {
+                name: 'DeeplyNestedObject2',
+                kind: 'OBJECT',
+                fields: [
+                    { name: 'DeepNest', type: { name: 'DeeplyNestedObject' }, args: [] }
+                ]
+            },
+            ObjectContainingTwoDeeplyNestedObjects: {
+                name: 'ObjectContainingTwoDeeplyNestedObjects',
+                kind: 'OBJECT',
+                fields: [
+                    { name: 'DeepNest', type: { name: 'DeeplyNestedObject' }, args: [] },
+                    { name: 'DeepNest2', type: { name: 'DeeplyNestedObject2' }, args: [] }
+                ]
             }
         };
     });
@@ -64,7 +79,7 @@ describe('Build query tree from field', () => {
         result.MyObjectField[0].should.equal('MyScalar');
         result.MyObjectField[1].should.equal('MyScalar2');
         ignoreList.length.should.equal(1);
-        ignoreList[0].should.equal('MyObjectField-ObjectField');
+        ignoreList[0].should.equal('MyObjectField-ObjectField-ROOT');
     });
 
     it('should handle nested objects', () => {
@@ -83,8 +98,8 @@ describe('Build query tree from field', () => {
         result.MyObjectWithNested[0].NestedObject[1].should.equal('MyScalar2');
         result.MyObjectWithNested[1].should.equal('NestedScalar');
         ignoreList.length.should.equal(2);
-        ignoreList[0].should.equal('MyObjectWithNested-ObjectNestingOtherObject');
-        ignoreList[1].should.equal('NestedObject-ObjectField');
+        ignoreList[0].should.equal('MyObjectWithNested-ObjectNestingOtherObject-ROOT');
+        ignoreList[1].should.equal('NestedObject-ObjectField-ObjectNestingOtherObject');
     });
 
     it('should handle circular dependencies', () => {
@@ -103,6 +118,22 @@ describe('Build query tree from field', () => {
         result.MyCircle[0].DeepNest.length.should.equal(1);
         result.MyCircle[0].DeepNest[0].NotSoDeepNest.length.should.equal(2);
         result.MyCircle[0].DeepNest[0].NotSoDeepNest[0].should.equal('MyScalar');
+    });
+
+    it('should handle very similar objects[test covering skipList naming bug]', () => {
+        const ignoreList = [];
+        const result = buildQueryTreeFromField({
+            type: {
+                name: 'ObjectContainingTwoDeeplyNestedObjects'
+            },
+            name: 'MyBug',
+            args: []
+        },
+            typeDictionary, ignoreList
+        );
+        result.MyBug.length.should.equal(2);
+        should.not.equal(result.MyBug[0], null);
+        should.not.equal(result.MyBug[1], null);
     });
 
     it('should not support default value for non nullable args[NOT IMPLEMENTED YET!]', () => {
