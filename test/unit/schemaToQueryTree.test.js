@@ -1,5 +1,6 @@
 const should = require('chai').should();
-const buildQueryTreeFromField = require('../../lib/schemaToQueryTree');
+const schemaToQueryTree = require('../../lib/schemaToQueryTree');
+const buildQueryTreeFromField = schemaToQueryTree.buildQueryTreeFromField;
 
 describe('Build query tree from field', () => {
     let typeDictionary = null;
@@ -48,6 +49,33 @@ describe('Build query tree from field', () => {
                 fields: [
                     { name: 'DeepNest', type: { name: 'DeeplyNestedObject' }, args: [] },
                     { name: 'DeepNest2', type: { name: 'DeeplyNestedObject2' }, args: [] }
+                ]
+            },
+            DeeplyNestedObjectWithPartialNoFollow: {
+                name: 'DeeplyNestedObjectWithPartialNoFollow',
+                kind: 'OBJECT',
+                fields: [
+                    { name: 'NotSoDeepNest', type: { name: 'ObjectField' }, args: [] },
+                    {
+                        name: 'NOFollowPart',
+                        type: { name: 'DeeplyNestedObject' },
+                        args: [
+                            {
+                                "name": "ip",
+                                "description": "",
+                                "type": {
+                                    "kind": "NON_NULL",
+                                    "name": null,
+                                    "ofType": {
+                                        "kind": "SCALAR",
+                                        "name": "String",
+                                        "ofType": null
+                                    }
+                                },
+                                "defaultValue": null
+                            }
+                        ]
+                    }
                 ]
             }
         };
@@ -254,5 +282,35 @@ describe('Build query tree from field', () => {
             typeDictionary
         );
         result.should.equal('MyScalar(ip: "192.168.0.1") MyScalar(ip: "192.168.0.2")');
+    });
+
+    it('coverage should be able to fetch all fields', () => {
+        const result = schemaToQueryTree.getAllFields({
+                type: {
+                    name: 'DeeplyNestedObjectWithPartialNoFollow'
+                },
+                name: 'Test',
+                args: []
+            },
+            typeDictionary,
+            []
+        );
+        result.length.should.equal(9);
+        result.filter(r => r.indexOf('NOFollowPart') > 0).length.should.equal(1);
+    });
+
+    it('coverage should be able to fetch only queryable fields', () => {
+        const result = schemaToQueryTree.getQuerableFields({
+                type: {
+                    name: 'DeeplyNestedObjectWithPartialNoFollow'
+                },
+                name: 'Test',
+                args: []
+            },
+            typeDictionary,
+            []
+        );
+        result.length.should.equal(4);
+        result.filter(r => r.indexOf('NOFollowPart') > 0).length.should.equal(0);
     });
 });
