@@ -1,6 +1,5 @@
 const should = require('chai').should();
-const schemaToQueryTree = require('../../../lib/schemaToQueryTree');
-const buildQueryTreeFromField = schemaToQueryTree.buildQueryTreeFromField;
+const buildQueryTreeFromField = require('../../../lib/schemaToQueryTree').buildQueryTreeFromField;
 const mockData = require('../mockData');
 
 describe('Build query tree from field', () => {
@@ -211,35 +210,5 @@ describe('Build query tree from field', () => {
             typeDictionary
         );
         result.should.equal('MyScalar(ip: "192.168.0.1") MyScalar(ip: "192.168.0.2")');
-    });
-
-    it('coverage should be able to fetch all fields', () => {
-        const result = schemaToQueryTree.getAllFields({
-                type: {
-                    name: 'DeeplyNestedObjectWithPartialNoFollow'
-                },
-                name: 'Test',
-                args: []
-            },
-            typeDictionary,
-            []
-        );
-        result.length.should.equal(9);
-        result.filter(r => r.indexOf('NOFollowPart') > 0).length.should.equal(1);
-    });
-
-    it('coverage should be able to fetch only queryable fields', () => {
-        const result = schemaToQueryTree.getQuerableFields({
-                type: {
-                    name: 'DeeplyNestedObjectWithPartialNoFollow'
-                },
-                name: 'Test',
-                args: []
-            },
-            typeDictionary,
-            []
-        );
-        result.length.should.equal(4);
-        result.filter(r => r.indexOf('NOFollowPart') > 0).length.should.equal(0);
     });
 });
