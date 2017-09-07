@@ -1,5 +1,5 @@
 const should = require('chai').should();
-const schemaToQueryTree = require('../../../lib/schemaToQueryTree');
+const { getQueryFields, getQueryFieldsModes } = require('../../../lib/schemaToQueryTree');
 const mockData = require('../mockData');
 
 describe('Build coverage', () => {
@@ -10,13 +10,15 @@ describe('Build coverage', () => {
     });
 
     it('should be able to fetch all fields', () => {
-        const result = schemaToQueryTree.getAllFields({
-            type: {
-                name: 'DeeplyNestedObjectWithPartialNoFollow'
+        const result = getQueryFields(
+            getQueryFieldsModes.ALL_FIELDS,
+            {
+                type: {
+                    name: 'DeeplyNestedObjectWithPartialNoFollow'
+                },
+                name: 'Test',
+                args: []
             },
-            name: 'Test',
-            args: []
-        },
             typeDictionary,
             []
         );
@@ -25,13 +27,15 @@ describe('Build coverage', () => {
     });
 
     it('should be able to fetch only queryable fields', () => {
-        const result = schemaToQueryTree.getQuerableFields({
-            type: {
-                name: 'DeeplyNestedObjectWithPartialNoFollow'
+        const result = getQueryFields(
+            getQueryFieldsModes.QUERYABLE_FIELDS,
+            {
+                type: {
+                    name: 'DeeplyNestedObjectWithPartialNoFollow'
+                },
+                name: 'Test',
+                args: []
             },
-            name: 'Test',
-            args: []
-        },
             typeDictionary,
             []
         );
@@ -40,26 +44,28 @@ describe('Build coverage', () => {
     });
 
     it('should not return querable fields if root object is not querable', () => {
-        const result = schemaToQueryTree.getQuerableFields({
-            name: 'NOFollowPart',
-            type: { name: 'DeeplyNestedObject' },
-            args: [
-                {
-                    "name": "ip",
-                    "description": "",
-                    "type": {
-                        "kind": "NON_NULL",
-                        "name": null,
-                        "ofType": {
-                            "kind": "SCALAR",
-                            "name": "String",
-                            "ofType": null
-                        }
-                    },
-                    "defaultValue": null
-                }
-            ]
-        },
+        const result = getQueryFields(
+            getQueryFieldsModes.QUERYABLE_FIELDS,
+            {
+                name: 'NOFollowPart',
+                type: { name: 'DeeplyNestedObject' },
+                args: [
+                    {
+                        "name": "ip",
+                        "description": "",
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": null,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "String",
+                                "ofType": null
+                            }
+                        },
+                        "defaultValue": null
+                    }
+                ]
+            },
             typeDictionary,
             []);
         result.length.should.equal(0);
