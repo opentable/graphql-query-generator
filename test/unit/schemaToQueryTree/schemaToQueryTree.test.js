@@ -1,7 +1,7 @@
 const should = require('chai').should();
-const schemaToQueryTree = require('../../lib/schemaToQueryTree');
+const schemaToQueryTree = require('../../../lib/schemaToQueryTree');
 const buildQueryTreeFromField = schemaToQueryTree.buildQueryTreeFromField;
-const mockData = require('./mockData');
+const mockData = require('../mockData');
 
 describe('Build query tree from field', () => {
     let typeDictionary = null;
