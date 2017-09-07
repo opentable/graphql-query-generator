@@ -10,7 +10,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "npm run jsdoctest && mocha test/**/*.js",
+    "test": "npm run jsdoctest && mocha test/ --recursive",
     "jsdoctest": "mocha --require jsdoctest lib/"
   },
   "repository": {

@@ -1,56 +1,12 @@
 const should = require('chai').should();
-const buildQueryTreeFromField = require('../../lib/schemaToQueryTree');
+const buildQueryTreeFromField = require('../../../lib/schemaToQueryTree').buildQueryTreeFromField;
+const mockData = require('../mockData');
 
 describe('Build query tree from field', () => {
     let typeDictionary = null;
 
     beforeEach(() => {
-        typeDictionary = {
-            ScalarField: {
-                name: 'ScalarField',
-                kind: 'SCALAR',
-                fields: null
-            },
-            ObjectField: {
-                name: 'ObjectField',
-                kind: 'OBJECT',
-                fields: [
-                    { name: 'MyScalar', type: { name: 'ScalarField' }, args: [] },
-                    { name: 'MyScalar2', type: { name: 'ScalarField' }, args: [] }
-                ]
-            },
-            ObjectNestingOtherObject: {
-                name: 'ObjectNestingOtherObject',
-                kind: 'OBJECT',
-                fields: [
-                    { name: 'NestedObject', type: { name: 'ObjectField' }, args: [] },
-                    { name: 'NestedScalar', type: { name: 'ScalarField' }, args: [] }
-                ]
-            },
-            DeeplyNestedObject: {
-                name: 'DeeplyNestedObject',
-                kind: 'OBJECT',
-                fields: [
-                    { name: 'DeepNest', type: { name: 'DeeplyNestedObject' }, args: [] },
-                    { name: 'NotSoDeepNest', type: { name: 'ObjectField' }, args: [] }
-                ]
-            },
-            DeeplyNestedObject2: {
-                name: 'DeeplyNestedObject2',
-                kind: 'OBJECT',
-                fields: [
-                    { name: 'DeepNest', type: { name: 'DeeplyNestedObject' }, args: [] }
-                ]
-            },
-            ObjectContainingTwoDeeplyNestedObjects: {
-                name: 'ObjectContainingTwoDeeplyNestedObjects',
-                kind: 'OBJECT',
-                fields: [
-                    { name: 'DeepNest', type: { name: 'DeeplyNestedObject' }, args: [] },
-                    { name: 'DeepNest2', type: { name: 'DeeplyNestedObject2' }, args: [] }
-                ]
-            }
-        };
+        typeDictionary = mockData
     });
 
     it('should handle simple fields', () => {
