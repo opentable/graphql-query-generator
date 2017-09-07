@@ -5,34 +5,34 @@ const QueryGenerator = require('../../lib/queryGenerator');
 describe('Query generation', () => {
 
   const serverUrl = 'http://localhost:12345/graphql';
-  let queries = null;
+  let queryPromise = null;
 
   before(() => app.then(()=>{
     const queryGenerator = new QueryGenerator(serverUrl);
-    queries = queryGenerator.run();
+    queryPromise = queryGenerator.run();
   }));
 
   it('Generates multiple queries', () => {
-    return queries
-        .then(x => {
-          (x[0].match(/rollDice/g) || []).length.should.equal(4);
+    return queryPromise
+        .then(({queries}) => {
+          (queries[0].match(/rollDice/g) || []).length.should.equal(4);
         });
-      
+
   });
 
   it('Ignores fields with +NOFOLLOW in description', () => {
-    return queries
-      .then(x => {
-        (x[0].match(/ignoredWithExamples/g) || []).length.should.equal(0);
-        (x[0].match(/ignoredNoParameters/g) || []).length.should.equal(0);
+    return queryPromise
+      .then(({queries}) => {
+        (queries[0].match(/ignoredWithExamples/g) || []).length.should.equal(0);
+        (queries[0].match(/ignoredNoParameters/g) || []).length.should.equal(0);
       });
   });
 
   it('Uses Examples section for scalar fields with non-nullable args', () => {
-    return queries
-      .then(x => {
+    return queryPromise
+      .then(({queries}) => {
         // 8 because we have two examples for rollXTimes and 4 examples of parent
-        (x[0].match(/rollXTimes\(times. [0-9]+\)/g) || []).length.should.equal(8);
+        (queries[0].match(/rollXTimes\(times. [0-9]+\)/g) || []).length.should.equal(8);
       });
   });
 

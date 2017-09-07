@@ -2,6 +2,7 @@
 const graphQlClient = require('../lib/graphqlClient');
 const chalk = require('chalk');
 const retry = require('../lib/cli/retryHelper').retry;
+const QueryGenerator = require('../lib/queryGenerator');
 process.title = 'gql-query-generator';
 
 let program = require('commander');
@@ -12,7 +13,7 @@ program
   .version(require('../package.json').version)
   .arguments('<serverUrl>')
   .action(function (url) {
-     serverUrl = url;
+    serverUrl = url;
   })
   .option('-v, --verbose', 'Displays all the query information')
   .option('-p, --parallel', 'Executes all queries in parallel')
@@ -20,14 +21,11 @@ program
   .option('-t, --retrySnoozeTime <n>', 'Time in milliseconds to wait before retries', parseInt)
   .parse(process.argv);
 
-
-if(serverUrl===null ) {
+if (serverUrl === null) {
   console.log('Please specify the graphql endpoint for the serverUrl');
   program.outputHelp();
   process.exit(1);
 }
-
-const QueryGenerator = require('../lib/queryGenerator');
 
 const queryGenerator = new QueryGenerator(serverUrl);
 
@@ -37,7 +35,7 @@ let retryCount = program.retryCount || 0;
 let retrySnoozeTime = program.retrySnoozeTime || 1000;
 
 retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
-  .then(queries => {
+  .then(({ queries }) => {
     console.log(`Fetched ${queries.length} queries, get to work!`);
 
     return maybeSerialisePromises(
@@ -45,7 +43,7 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
         graphQlClient(serverUrl, query)
           .then((res) => res.json())
           .then((result) => {
-            if(result.errors) {
+            if (result.errors) {
               return Promise.reject(result);
             }
 
@@ -58,17 +56,17 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
           })
           .catch((result) => {
             console.log(chalk.red('FAIL'));
-            if(result.errors) {
+            if (result.errors) {
               console.log('Following errors occured:\n');
               result.errors.forEach(err => console.log(err.message + '\n\tPath: ' + err.path.join('.')));
               console.log('');
             }
-            console.log(chalk.grey('Full query:\n',query));
+            console.log(chalk.grey('Full query:\n', query));
             failedTests++;
           })
       )
     ).then(() => {
-      if(failedTests > 0) {
+      if (failedTests > 0) {
         console.log(chalk.bold.red(`${failedTests}/${failedTests + passedTests} queries failed.`));
         return process.exit(1);
       }
@@ -82,14 +80,14 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
   });
 
 function maybeSerialisePromises(promises) {
-  if(program.parallel) {
+  if (program.parallel) {
     return Promise.all(promises);
   }
 
-  if(promises.length > 1) {
+  if (promises.length > 1) {
     return promises[0].then(() =>
       maybeSerialisePromises(promises.slice(1))
-      );
+    );
   } else if (promises.length === 1) {
     return promises[0];
   }
