@@ -53,14 +53,18 @@ describe('Query generation', function() {
 
   before(() => {
     const queryGenerator = new QueryGenerator(serverUrl);
-    queries = queryGenerator.run();
+    queryPromise = queryGenerator.run();
   });
 
   it('Generates multiple queries', function() {
     this.timeout = 50000;
 
-    return queries
-      .then(queries => Promise.all(queries.map(query => requestToGraphQL(serverUrl, query))))
+    return queryPromise
+      .then(({queries, coverage}) =>{
+          console.log(`Coverage: ${coverage.coverageRatio}`);
+          console.log(`skipped fields: ${coverage.notCoveredFields}`);
+          return Promise.all(queries.map(query => requestToGraphQL(serverUrl, query)));
+      })
       .then(results => assert.equal(results.filter(x => x.statusCode !== 200).length, 0));
   });
 });
