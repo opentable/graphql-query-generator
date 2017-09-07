@@ -35,7 +35,7 @@ let retryCount = program.retryCount || 0;
 let retrySnoozeTime = program.retrySnoozeTime || 1000;
 
 retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
-  .then(({ queries }) => {
+  .then(({ queries, coverage }) => {
     console.log(`Fetched ${queries.length} queries, get to work!`);
 
     return maybeSerialisePromises(
@@ -58,7 +58,7 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
             console.log(chalk.red('FAIL'));
             if (result.errors) {
               console.log('Following errors occured:\n');
-              result.errors.forEach(err => console.log(err.message + '\n\tPath: ' + err.path.join('.')));
+              result.errors.forEach(formatError);
               console.log('');
             }
             console.log(chalk.grey('Full query:\n', query));
@@ -68,16 +68,37 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
     ).then(() => {
       if (failedTests > 0) {
         console.log(chalk.bold.red(`${failedTests}/${failedTests + passedTests} queries failed.`));
+        console.log(formatCoverageData(coverage));
         return process.exit(1);
       }
 
       console.log(chalk.bold.green(`\nAll ${passedTests} tests passed.`))
+      console.log(formatCoverageData(coverage));
     });
   })
   .catch((error) => {
     console.log(chalk.red(`\nFailed to get queries from server:\n${error}`));
     return process.exit(1);
   });
+
+function formatError(err) {
+  const pathMessage = err.path ? `\n\tPath: ${err.path.join('.')}` : ''
+  return console.log(err.message + pathMessage);
+}
+
+function formatCoverageData(coverage) {
+  const coveragePercentage = (coverage.coverageRatio * 100).toFixed(2);
+  return `
+=======================================
+Overall coverage: ${coveragePercentage}%
+---------------------------------------
+Fields not covered by queries:
+
+${coverage.notCoveredFields.join('\n')}
+---------------------------------------
+Overall coverage: ${coveragePercentage}%
+`;
+}
 
 function maybeSerialisePromises(promises) {
   if (program.parallel) {
