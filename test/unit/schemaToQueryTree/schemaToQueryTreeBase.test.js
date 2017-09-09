@@ -1,5 +1,5 @@
 const should = require('chai').should();
-const buildQueryTreeFromField = require('../../../lib/schemaToQueryTree').buildQueryTreeFromField;
+const buildQueryTreeFromField = require('../../../lib/schemaToQueryTree').default.buildQueryTreeFromField;
 const mockData = require('../mockData');
 
 describe('Build query tree from field', () => {

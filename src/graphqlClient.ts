@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import * as fetch from 'node-fetch';
 
 function createQuery(query) {
   var body = {

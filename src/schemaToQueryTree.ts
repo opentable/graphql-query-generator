@@ -1,7 +1,6 @@
-import _ from 'lodash';
-import graphql from 'graphql';
+import * as _ from 'lodash';
+import * as graphql from 'graphql';
 import descriptionParser from './descriptionParser';
-import { get } from 'lodash';
 
 const { getExamplesFrom, shouldFollow } = descriptionParser;
 
