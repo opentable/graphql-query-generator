@@ -3,6 +3,7 @@ const graphQlClient = require('../lib/graphqlClient');
 const chalk = require('chalk');
 const retry = require('../lib/cli/retryHelper').retry;
 const QueryGenerator = require('../lib/queryGenerator');
+
 process.title = 'gql-query-generator';
 
 let program = require('commander');

@@ -1,6 +1,6 @@
 const examplesSection = new RegExp(/Example[s]?:/);
 
-module.exports = {
+export default {
   /**
    * @example
    *   module.exports.getExamplesFrom('Emples:country(cId: 1)') // => []
@@ -14,7 +14,7 @@ module.exports = {
    *   module.exports.getExamplesFrom('Examples:country(cId: 1, cName: "Test")') // => ['country(cId: 1, cName: "Test")']
    *   module.exports.getExamplesFrom('Examples:country(cId: 1, cName: "Test")\nmetro(mId: 100)') // => ['country(cId: 1, cName: "Test")', 'metro(mId: 100)']
    */
-  getExamplesFrom: function getExamplesFrom(comment) {
+  getExamplesFrom(comment) {
     if (!comment) {
       return [];
     }
@@ -22,8 +22,8 @@ module.exports = {
     const what = comment.split(examplesSection);
     if (what.length !== 2) return [];
     const examplesDescription = what[1];
-    let result = [];
-    let matches = null;
+    let result : Array<any> = [];
+    let matches : any | null = null;
     const test = new RegExp(/(\s*([_A-Za-z]\w*)\s*\([^)]*\)\s*)/g);
     // Forgive me
     while ((matches = test.exec(examplesDescription)) && matches.length > 1) {
@@ -41,7 +41,7 @@ module.exports = {
    *   module.exports.shouldFollow('Examples+NOFOLLOW:country(\ncId: 1\n)') // => true
    *   module.exports.shouldFollow('Examples:country(\ncId: 1\n)+NOFOLLOW') // => true
    */
-  shouldFollow: function shouldFollow(description) {
+  shouldFollow(description) {
     if (!description) {
       return true;
     }

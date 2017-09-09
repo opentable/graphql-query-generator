@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 /**
  * @example
@@ -9,10 +9,10 @@ const _ = require('lodash');
  *   // => 'id name q2_42: coordinates { lat long  } q3_42: test { a  } '
  */
 module.exports = function queryTreeToGraphQLString(tree, parentIndex = 0) {
-  let output = '';
+  let output : string = '';
 
   if (_.isObject(tree) && !_.isArray(tree)) {
-    let index = 42;
+    let index : number = 42;
     _.forIn(tree, (value, key) => {
       var x = tree == tree;
       output += `q${parentIndex}_${index}: ${key} { ${queryTreeToGraphQLString(value, index)} }`;

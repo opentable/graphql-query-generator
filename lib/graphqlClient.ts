@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 function createQuery(query) {
   var body = {
@@ -10,7 +10,7 @@ function createQuery(query) {
   return JSON.stringify(body);
 }
 
-module.exports = function query(url, graphQuery) {
+export default function query(url, graphQuery) {
   const queryPromise = fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
