@@ -18,7 +18,7 @@ describe('Build query tree from field', () => {
             args: []
         },
             typeDictionary
-        ).should.equal('FetchParentField');
+        ).should.deep.equal(['FetchParentField']);
     });
 
     it('should handle simple objects', () => {
@@ -32,8 +32,8 @@ describe('Build query tree from field', () => {
         },
             typeDictionary, ignoreList
         );
-        result.MyObjectField[0].should.equal('MyScalar');
-        result.MyObjectField[1].should.equal('MyScalar2');
+        result.MyObjectField[0].should.deep.equal(['MyScalar']);
+        result.MyObjectField[1].should.deep.equal(['MyScalar2']);
         ignoreList.length.should.equal(1);
         ignoreList[0].should.equal('MyObjectField-ObjectField-ROOT');
     });
@@ -50,9 +50,9 @@ describe('Build query tree from field', () => {
             typeDictionary, ignoreList
         );
         result.MyObjectWithNested[0].should.include.all.keys('NestedObject');
-        result.MyObjectWithNested[0].NestedObject[0].should.equal('MyScalar');
-        result.MyObjectWithNested[0].NestedObject[1].should.equal('MyScalar2');
-        result.MyObjectWithNested[1].should.equal('NestedScalar');
+        result.MyObjectWithNested[0].NestedObject[0].should.deep.equal(['MyScalar']);
+        result.MyObjectWithNested[0].NestedObject[1].should.deep.equal(['MyScalar2']);
+        result.MyObjectWithNested[1].should.deep.equal(['NestedScalar']);
         ignoreList.length.should.equal(2);
         ignoreList[0].should.equal('MyObjectWithNested-ObjectNestingOtherObject-ROOT');
         ignoreList[1].should.equal('NestedObject-ObjectField-ObjectNestingOtherObject');
@@ -73,7 +73,7 @@ describe('Build query tree from field', () => {
         result.MyCircle[0].should.include.all.keys('DeepNest');
         result.MyCircle[0].DeepNest.length.should.equal(1);
         result.MyCircle[0].DeepNest[0].NotSoDeepNest.length.should.equal(2);
-        result.MyCircle[0].DeepNest[0].NotSoDeepNest[0].should.equal('MyScalar');
+        result.MyCircle[0].DeepNest[0].NotSoDeepNest[0].should.deep.equal(['MyScalar']);
     });
 
     it('should handle very similar objects[test covering skipList naming bug]', () => {
@@ -129,8 +129,8 @@ describe('Build query tree from field', () => {
         },
             typeDictionary
         );
-        result['MyObjectField(ip: "192.168.0.1")'][0].should.equal('MyScalar');
-        result['MyObjectField(ip: "192.168.0.1")'][1].should.equal('MyScalar2');
+        result['MyObjectField(ip: "192.168.0.1")'][0].should.deep.equal(['MyScalar']);
+        result['MyObjectField(ip: "192.168.0.1")'][1].should.deep.equal(['MyScalar2']);
     });
 
     it('should ignore nullable args', () => {
@@ -149,8 +149,8 @@ describe('Build query tree from field', () => {
         },
             typeDictionary
         );
-        result.MyObjectField[0].should.equal('MyScalar');
-        result.MyObjectField[1].should.equal('MyScalar2');
+        result.MyObjectField[0].should.deep.equal(['MyScalar']);
+        result.MyObjectField[1].should.deep.equal(['MyScalar2']);
     });
 
     it('should ignore nullable args for SCALAR fields', () => {
@@ -169,7 +169,7 @@ describe('Build query tree from field', () => {
         },
             typeDictionary
         );
-        result.should.equal('MyScalar');
+        result.should.deep.equal(['MyScalar']);
     });
 
     it('should use single example from description for non-nullable args for SCALAR fields', () => {
@@ -189,7 +189,7 @@ describe('Build query tree from field', () => {
         },
             typeDictionary
         );
-        result.should.equal('MyScalar(ip: "192.168.0.1")');
+        result.should.deep.equal(['MyScalar(ip: "192.168.0.1")']);
     });
 
     it('should use multiple examples from description for non-nullable args for SCALAR fields', () => {
@@ -209,6 +209,6 @@ describe('Build query tree from field', () => {
         },
             typeDictionary
         );
-        result.should.equal('MyScalar(ip: "192.168.0.1") MyScalar(ip: "192.168.0.2")');
+        result.should.deep.equal(['MyScalar(ip: "192.168.0.1")','MyScalar(ip: "192.168.0.2")']);
     });
 });

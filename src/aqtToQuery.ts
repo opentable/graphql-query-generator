@@ -2,11 +2,12 @@ import * as _ from 'lodash';
 
 /**
  * @example
- *   exports.default('name') // => 'name'
- *   exports.default(['name', 'surname', 'age']) // => 'name surname age '
- *   exports.default({ people: 'name', countries: ['flag']}) // => 'q0_42: people { name }q0_43: countries { flag  }'
+ *   exports.default('name') // => 'f0: name'
+ *   exports.default(['name', 'surname', 'age']) // => 'f0: name f1: surname f2: age '
+ *   exports.default(['name', 'name', 'name']) // => 'f0: name f1: name f2: name '
+ *   exports.default({ people: 'name', countries: ['flag']}) // => 'q0_42: people { f42: name }q0_43: countries { f43: flag  }'
  *   exports.default(['id', 'name', { coordinates: ['lat', 'long'] }, { test: ['a']}])
- *   // => 'id name q2_42: coordinates { lat long  } q3_42: test { a  } '
+ *   // => 'f0: id f1: name q2_42: coordinates { f42: lat f43: long  } q3_42: test { f42: a  } '
  */
 export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
   let output : string = '';
@@ -22,12 +23,12 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
 
   if (_.isArray(tree)) {
     _.map(tree, (item, index) => {
-      output += `${queryTreeToGraphQLString(item, index)} `;
+      output += `${queryTreeToGraphQLString(item, parentIndex + index)} `;
     });
   }
 
   if (_.isString(tree)) {
-    output = `${tree}`;
+    output = `f${parentIndex}: ${tree}`;
   }
 
   return output;

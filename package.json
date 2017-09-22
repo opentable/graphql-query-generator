@@ -10,7 +10,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "npm run jsdoctest && mocha test/ --recursive",
+    "test": "npm run build-ts && npm run jsdoctest && mocha test/ --recursive",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "jsdoctest": "mocha --require jsdoctest lib/"

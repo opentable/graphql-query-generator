@@ -182,7 +182,7 @@ export default {
         return null;
       }
 
-      return queriesForRootField.join(' ');
+      return queriesForRootField;
     }
 
     if (fieldTypeDefinition.kind === 'OBJECT') {
