@@ -21,7 +21,7 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
     });
   }
 
-  if (_.isArray(tree) ){
+  if (_.isArray(tree)) {
     _.map(tree, (item, index) => {
       output += `${queryTreeToGraphQLString(item, parentIndex + index)} `;
     });
