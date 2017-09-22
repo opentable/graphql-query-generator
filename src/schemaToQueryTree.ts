@@ -1,6 +1,8 @@
-const _ = require('lodash');
-const graphql = require('graphql');
-const { getExamplesFrom, shouldFollow } = require('./descriptionParser');
+import * as _ from 'lodash';
+import * as graphql from 'graphql';
+import descriptionParser from './descriptionParser';
+
+const { getExamplesFrom, shouldFollow } = descriptionParser;
 
 /**
  * @example
@@ -124,10 +126,10 @@ const getQueryFieldsModes = {
   ALL_FIELDS: 'ALL_FIELDS'
 };
 
-module.exports = {
+export default {
   getQueryFieldsModes: getQueryFieldsModes,
   getQueryFields: function getQueryFields(mode, field, typeDictionary, visitedFields, isRoot = true, parentFieldTypeDefinition = null) {
-    let queryFields = [];
+    let queryFields : Array<string> = [];
     const fieldTypeName = magiclyExtractFieldTypeName(field);
     const fieldTypeDefinition = typeDictionary[fieldTypeName];
     if (isRoot) {
@@ -169,7 +171,7 @@ module.exports = {
 
     return queryFields;
   },
-  buildQueryTreeFromField: function buildQueryTreeFromField(field, typeDictionary, skipped = [], parentFieldTypeDefinition = null) {
+  buildQueryTreeFromField: function buildQueryTreeFromField(field, typeDictionary, skipped : Array<string> = [], parentFieldTypeDefinition = null) {
     const fieldTypeName = magiclyExtractFieldTypeName(field);
     const fieldTypeDefinition = typeDictionary[fieldTypeName];
 
@@ -187,7 +189,7 @@ module.exports = {
       skipped.push(getSkipKey(fieldTypeDefinition, field, parentFieldTypeDefinition));
     }
 
-    let queryNode = null;
+    let queryNode : any | null = null;
     const allFields = getFields(field, typeDictionary);
 
     _.forIn(allFields, (childField) => {

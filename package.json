@@ -11,6 +11,8 @@
   },
   "scripts": {
     "test": "npm run jsdoctest && mocha test/ --recursive",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
     "jsdoctest": "mocha --require jsdoctest lib/"
   },
   "repository": {
@@ -25,11 +27,13 @@
   },
   "homepage": "https://github.com/opentable/graphql-query-generator#readme",
   "devDependencies": {
+    "@types/node": "^8.0.28",
     "chai": "^3.5.0",
     "express-graphql": "^0.6.6",
     "jsdoctest": "^1.7.0",
     "mocha": "^3.3.0",
     "swapi-graphql": "0.0.6",
+    "typescript": "^2.5.2",
     "uglifyjs": "2.4.10"
   },
   "dependencies": {

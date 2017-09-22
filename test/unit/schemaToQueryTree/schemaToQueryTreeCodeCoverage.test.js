@@ -1,5 +1,5 @@
 const should = require('chai').should();
-const { getQueryFields, getQueryFieldsModes } = require('../../../lib/schemaToQueryTree');
+const { getQueryFields, getQueryFieldsModes } = require('../../../lib/schemaToQueryTree').default;
 const mockData = require('../mockData');
 
 describe('Build coverage', () => {

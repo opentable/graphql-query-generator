@@ -1,7 +1,7 @@
-const introspectionQuery = require('./introspectionQuery');
-const query = require('./graphqlClient');
-const schemaToQueries = require('./schemaToQueries');
-const calculateCoverage = require('./coverageCalculator');
+import introspectionQuery from './introspectionQuery';
+import query from './graphqlClient';
+import schemaToQueries from './schemaToQueries';
+import calculateCoverage from './coverageCalculator';
 
 module.exports = function QueryGenerator(url) {
   function buildTypeDictionary(__schema) {
