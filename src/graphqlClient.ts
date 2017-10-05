@@ -3,7 +3,7 @@ import * as fetch from 'node-fetch';
 function createQuery(query) {
   var body = {
     "query": query,
-    "variables": "{}",
+    "variables": {},
     "operationName": null
   };
 
