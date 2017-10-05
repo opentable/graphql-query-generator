@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const graphQlClient = require('../graphqlClient');
+const graphQlClient = require('../graphqlClient').default;
 const chalk = require('chalk');
 const retry = require('./retryHelper').retry;
 const QueryGenerator = require('../queryGenerator');
