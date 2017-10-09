@@ -1,6 +1,6 @@
 {
   "name": "graphql-query-generator",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Generates queries from the GraphQL endpoint via schema introspection.",
   "main": "index.js",
   "bin": {
