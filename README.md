@@ -31,7 +31,7 @@ You can use either the CLI or the library to get started!
 #### 2.1 Using the CLI
 
 Execute following commands to get this tool running.
-> NOTE: Whenever there are parameters required you need to provide them in Graphql schema by following our Examples notation. You can find it in [Usage](#Usage) section.
+> NOTE: Whenever there are parameters required you need to provide them in Graphql schema by following our Examples notation. You can find it in [Usage](#1-annotate-your-queries-optional-although-highly-recommended) section.
 
 ```
 npm i -g graphql-query-generator
