@@ -17,34 +17,42 @@ var schema = buildSchema(`
     rollOnce: Int!
     statistics(page: Int!): RandomnessStatistics!
 
-    # Scalar field with non nullable arg and example section
-    # Examples:
-    # rollXTimes(times: 10)
-    # rollXTimes(times: 11)
+    """
+    Scalar field with non nullable arg and example section
+    Examples:
+    rollXTimes(times: 10)
+    rollXTimes(times: 11)
+    """
     rollXTimes(times: Int!): Int!
 
-    # A description for ignored field with parameters
-    #
-    # Examples:
-    # ignoredWithExamples(parameter: 42)
-    # +NOFOLLOW
+    """
+    A description for ignored field with parameters
+   
+    Examples:
+    ignoredWithExamples(parameter: 42)
+    +NOFOLLOW
+    """
     ignoredWithExamples(parameter: Int!): IgnoredSubtype
 
-    # +NOFOLLOW
+    """
+    +NOFOLLOW
+    """
     ignoredNoParameters: IgnoredSubtype
   }
 
   type Query {
-    # RollDice has four examples
-    #
-    # Examples:
-    # rollDice(numDice: 4, numSides: 2)
-    # rollDice( numDice : 40 , numSides:2)
-    # rollDice ( numDice: 2, numSides: 299 )
-    # rollDice (
-    #   numDice:4,
-    #   numSides: 2342
-    # )
+    """
+    RollDice has four examples
+    
+    Examples:
+    rollDice(numDice: 4, numSides: 2)
+    rollDice( numDice : 40 , numSides:2)
+    rollDice ( numDice: 2, numSides: 299 )
+    rollDice (
+      numDice:4,
+      numSides: 2342
+    )
+    """
     rollDice(numDice: Int!, numSides: Int): RandomDie
   }
 `);
