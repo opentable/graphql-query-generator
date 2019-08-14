@@ -1,22 +1,25 @@
-import * as _ from 'lodash';
+import * as _ from "lodash";
 
 /**
  * @example
- *   exports.default('name') // => 'f0: name'
- *   exports.default(['name', 'surname', 'age']) // => 'f0: name f1: surname f2: age '
- *   exports.default(['name', 'name', 'name']) // => 'f0: name f1: name f2: name '
- *   exports.default({ people: 'name', countries: ['flag']}) // => 'q0_42: people { f42: name }q0_43: countries { f43: flag  }'
+ *   exports.default('name') // => 'f0_name: name'
+ *   exports.default(['name', 'surname', 'age']) // => 'f0_name: name f1_surname: surname f2_age: age '
+ *   exports.default(['name', 'name', 'name']) // => 'f0_name: name f1_name: name f2_name: name '
+ *   exports.default({ people: 'name', countries: ['flag']}) // => 'q0_42_people: people { f42_name: name }q0_43_countries: countries { f43_flag: flag  }'
  *   exports.default(['id', 'name', { coordinates: ['lat', 'long'] }, { test: ['a']}])
- *   // => 'f0: id f1: name q2_42: coordinates { f42: lat f43: long  } q3_42: test { f42: a  } '
+ *   // => 'f0_id: id f1_name: name q2_42_coordinates: coordinates { f42_lat: lat f43_long: long  } q3_42_test: test { f42_a: a  } '
  */
 export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
-  let output : string = '';
+  let output: string = "";
 
   if (_.isObject(tree) && !_.isArray(tree)) {
-    let index : number = 42;
+    let index: number = 42;
     _.forIn(tree, (value, key) => {
       var x = tree == tree;
-      output += `q${parentIndex}_${index}: ${key} { ${queryTreeToGraphQLString(value, index)} }`;
+      output += `q${parentIndex}_${index}_${key}: ${key} { ${queryTreeToGraphQLString(
+        value,
+        index
+      )} }`;
       index++;
     });
   }
@@ -28,9 +31,8 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
   }
 
   if (_.isString(tree)) {
-    output = `f${parentIndex}: ${tree}`;
+    output = `f${parentIndex}_${tree}: ${tree}`;
   }
 
   return output;
-};
-
+}
