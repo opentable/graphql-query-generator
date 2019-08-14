@@ -1,5 +1,13 @@
 import * as _ from "lodash";
 
+function symbolOnly(key: string) {
+  const result = key.match(/\b(\w+)\b/);
+  if (result) {
+    return result[0];
+  }
+  return "";
+}
+
 /**
  * @example
  *   exports.default('name') // => 'f0_name: name'
@@ -16,10 +24,9 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
     let index: number = 42;
     _.forIn(tree, (value, key) => {
       var x = tree == tree;
-      output += `q${parentIndex}_${index}_${key}: ${key} { ${queryTreeToGraphQLString(
-        value,
-        index
-      )} }`;
+      output += `q${parentIndex}_${index}_${symbolOnly(
+        key
+      )}: ${key} { ${queryTreeToGraphQLString(value, index)} }`;
       index++;
     });
   }
@@ -31,7 +38,7 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
   }
 
   if (_.isString(tree)) {
-    output = `f${parentIndex}_${tree}: ${tree}`;
+    output = `f${parentIndex}_${symbolOnly(tree)}: ${tree}`;
   }
 
   return output;

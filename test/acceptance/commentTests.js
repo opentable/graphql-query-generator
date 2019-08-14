@@ -31,7 +31,7 @@ describe("Query generation", () => {
       // 8 because we have two examples for rollXTimes and 4 examples of parent
       (
         queries[0].match(/rollXTimes\(times. [0-9]+\)/g) || []
-      ).length.should.equal(16);
+      ).length.should.equal(8);
     });
   });
 
