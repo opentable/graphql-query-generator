@@ -1,5 +1,5 @@
 {
-  "name": "graphql-query-generator",
+  "name": "@brysgo/graphql-query-generator",
   "version": "0.5.5",
   "description": "Generates queries from the GraphQL endpoint via schema introspection.",
   "main": "index.js",
