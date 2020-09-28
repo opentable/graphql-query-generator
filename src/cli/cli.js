@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const graphQlClient = require('../graphqlClient').default;
+const {mutationClient, queryClient} = require('../graphqlClient');
 const chalk = require('chalk');
 const retry = require('./retryHelper').retry;
 const QueryGenerator = require('../queryGenerator');
@@ -36,12 +36,13 @@ let retryCount = program.retryCount || 0;
 let retrySnoozeTime = program.retrySnoozeTime || 1000;
 
 retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
-  .then(({ queries, coverage }) => {
+  .then(({ queries, qCoverage, mutations, mCoverage }) => {
     console.log(`Fetched ${queries.length} queries, get to work!`);
-
-    return maybeSerialisePromises(
-      queries.map(query =>
-        graphQlClient(serverUrl, query)
+    console.log(`Fetched ${mutations.length} mutations, get to work!`);
+    
+    const asdFn = function(queries, client=queryClient){
+      return queries.map(query =>
+        client(serverUrl, query)
           .then((res) => res.json())
           .then((result) => {
             if (result.errors) {
@@ -66,15 +67,22 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
             failedTests++;
           })
       )
-    ).then(() => {
+    }
+
+    const quePromises = asdFn(queries, queryClient);
+    const mutPromises = asdFn(mutations, mutationClient);
+    const allPromises = quePromises.concat(mutPromises);
+
+    return maybeSerialisePromises(allPromises)
+    .then(() => {
       if (failedTests > 0) {
-        console.log(chalk.bold.red(`${failedTests}/${failedTests + passedTests} queries failed.`));
-        console.log(formatCoverageData(coverage));
+        console.log(chalk.bold.red(`\n\n\n${failedTests}/${failedTests + passedTests} queries failed.\n`));
+        console.log(formatCoverageData(qCoverage));
         return process.exit(1);
       }
 
       console.log(chalk.bold.green(`\nAll ${passedTests} tests passed.`))
-      console.log(formatCoverageData(coverage));
+      console.log(formatCoverageData(qCoverage));
     });
   })
   .catch((error) => {
