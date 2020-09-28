@@ -40,7 +40,7 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
     console.log(`Fetched ${queries.length} queries, get to work!`);
     console.log(`Fetched ${mutations.length} mutations, get to work!`);
     
-    const asdFn = function(queries, client=queryClient){
+    const getPromises = function(queries, client=queryClient){
       return queries.map(query =>
         client(serverUrl, query)
           .then((res) => res.json())
@@ -69,9 +69,9 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
       )
     }
 
-    const quePromises = asdFn(queries, queryClient);
-    const mutPromises = asdFn(mutations, mutationClient);
-    const allPromises = quePromises.concat(mutPromises);
+    const queryPromises = getPromises(queries, queryClient);
+    const mutationPromises = getPromises(mutations, mutationClient);
+    const allPromises = queryPromises.concat(mutationPromises);
 
     return maybeSerialisePromises(allPromises)
     .then(() => {
