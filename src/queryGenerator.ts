@@ -27,9 +27,9 @@ module.exports = function QueryGenerator(url) {
         const typeDictionary = buildTypeDictionary(result.data['__schema']);
         const queries = schemaToQueries(queryTypeName, typeDictionary);
         const mutations = schemaToQueries(mutationTypeName, typeDictionary);
-        const qCoverage = calculateCoverage(queryTypeName, typeDictionary);
-        const mCoverage = calculateCoverage(mutationTypeName, typeDictionary);
-        return { queries, qCoverage, mutations, mCoverage };
+        const queryCoverage = calculateCoverage(queryTypeName, typeDictionary);
+        const mutationCoverage = calculateCoverage(mutationTypeName, typeDictionary);
+        return { queries, queryCoverage, mutations, mutationCoverage };
       });
   };
 };
