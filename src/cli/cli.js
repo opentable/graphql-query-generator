@@ -36,7 +36,10 @@ let retryCount = program.retryCount || 0;
 let retrySnoozeTime = program.retrySnoozeTime || 1000;
 
 retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
-  .then(({ queries, qCoverage, mutations, mCoverage }) => {
+  .then(({ queries, queryCoverage, mutations, mutationCoverage }) => {
+    const coverage = { coverageRatio: queryCoverage.coverageRatio * mutationCoverage.coverageRatio, 
+      notCoveredFields: [ ...queryCoverage.notCoveredFields, ...mutationCoverage.notCoveredFields ]
+    };
     console.log(`Fetched ${queries.length} queries, get to work!`);
     console.log(`Fetched ${mutations.length} mutations, get to work!`);
     
@@ -77,12 +80,12 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
     .then(() => {
       if (failedTests > 0) {
         console.log(chalk.bold.red(`\n\n\n${failedTests}/${failedTests + passedTests} queries failed.\n`));
-        console.log(formatCoverageData(qCoverage));
+        console.log(formatCoverageData(coverage));
         return process.exit(1);
       }
 
       console.log(chalk.bold.green(`\nAll ${passedTests} tests passed.`))
-      console.log(formatCoverageData(qCoverage));
+      console.log(formatCoverageData(coverage));
     });
   })
   .catch((error) => {
