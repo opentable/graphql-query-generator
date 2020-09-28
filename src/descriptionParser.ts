@@ -3,6 +3,8 @@ const examplesSection = new RegExp(/Example[s]?:/);
 export default {
   /**
    * @example
+   *  exports.default.getExamplesFrom('Examples:mycountry:country(cId: 1)') // => ['mycountry:country(cId: 1)']
+   *  exports.default.getExamplesFrom('Examples:country(cId: $mycountry.id)') // => ['country(cId: $mycountry.id)']
    *  exports.default.getExamplesFrom('Emples:country(cId: 1)') // => []
    *  exports.default.getExamplesFrom('Emples:countrycId: 1)') // => []
    *  exports.default.getExamplesFrom('Examples:country(cId: 1)') // => ['country(cId: 1)']
@@ -24,7 +26,7 @@ export default {
     const examplesDescription = what[1];
     let result : Array<any> = [];
     let matches : any | null = null;
-    const test = new RegExp(/(\s*([_A-Za-z]\w*)\s*\([^)]*\)\s*)/g);
+    const test = new RegExp(/(\s*([ _A-Za-z:]*)\s*\([^)]*\)\s*)/g);
     // Forgive me
     while ((matches = test.exec(examplesDescription)) && matches.length > 1) {
       result.push(matches[1].trim());
