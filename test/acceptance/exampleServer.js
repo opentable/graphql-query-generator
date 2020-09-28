@@ -47,6 +47,33 @@ var schema = buildSchema(`
     # )
     rollDice(numDice: Int!, numSides: Int): RandomDie
   }
+
+  type Mutation {
+    # Examples:
+    # createGame(players: 4)
+    # createGame(players: 2)
+    createGame(players: Int!): Game
+
+    # Examples:
+    # startGame(id: "9108955fe473f1640ac38b9c")
+    startGame(id: ID!) : Game
+
+    # Examples:
+    # endGame(id: "9108955fe473f1640ac38b9c")
+    endGame(id: ID!): Game
+  }
+
+  type Game {
+    id: ID!
+    state: GameState!
+    players: Int!
+  }
+
+  enum GameState {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+  }
 `);
 
 class IgnoredSubtype {
