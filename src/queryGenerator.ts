@@ -1,5 +1,5 @@
 import introspectionQuery from './introspectionQuery';
-import {mutationClient, queryClient} from './graphqlClient';
+import {queryClient} from './graphqlClient';
 import schemaToQueries from './schemaToQueries';
 import calculateCoverage from './coverageCalculator';
 
@@ -23,14 +23,15 @@ module.exports = function QueryGenerator(url) {
       })
       .then(result => {
         const queryTypeName = result.data['__schema'].queryType.name;
+        const mutationTypeName = result.data['__schema'].mutationType.name;
         const typeDictionary = buildTypeDictionary(result.data['__schema']);
         // Each query can contain one or more tests.
         // Multiple queries are prefixed to prevent name collisions
         const queries = schemaToQueries(queryTypeName, typeDictionary);
-        const mutations = schemaToQueries("Mutation", typeDictionary);
-        const qCoverage = calculateCoverage(queryTypeName, typeDictionary);
-        const mCoverage = calculateCoverage("Mutation", typeDictionary);
-        return { queries, qCoverage, mutations, mCoverage };
+        const mutations = schemaToQueries(mutationTypeName, typeDictionary);
+        const queryCoverage = calculateCoverage(queryTypeName, typeDictionary);
+        const mutationCoverage = calculateCoverage(mutationTypeName, typeDictionary);
+        return { queries, queryCoverage, mutations, mutationCoverage };
       });
   };
 };
