@@ -22,10 +22,17 @@ describe('Query generation', () => {
 
   it('Ignores fields with +NOFOLLOW in description', () => {
     return queryPromise
-      .then(({queries, coverage}) => {
+      .then(({queries}) => {
         (queries[0].match(/ignoredWithExamples/g) || []).length.should.equal(0);
         (queries[0].match(/ignoredNoParameters/g) || []).length.should.equal(0);
       });
+  });
+
+  it('Generates multiple mutations', () => {
+    return queryPromise
+        .then(({mutations}) => {
+          (mutations[0].match(/createGame/g) || []).length.should.equal(2);
+        });
   });
 
   it('Uses Examples section for scalar fields with non-nullable args', () => {
