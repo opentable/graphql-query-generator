@@ -1,6 +1,7 @@
 var express = require('express');
 var graphqlHTTP = require('express-graphql');
 var { buildSchema } = require('graphql');
+const short = require('short-uuid');
 
 var schema = buildSchema(`
 
@@ -51,15 +52,15 @@ var schema = buildSchema(`
   type Mutation {
     # Examples:
     # createGame(players: 4)
-    # createGame(players: 2)
+    # twoPlayerGame:createGame(players: 2)
     createGame(players: Int!): Game
 
     # Examples:
-    # startGame(id: "9108955fe473f1640ac38b9c")
+    # startGame(id: "$twoPlayerGame.id")
     startGame(id: ID!) : Game
 
     # Examples:
-    # endGame(id: "9108955fe473f1640ac38b9c")
+    # endGame(id: "$twoPlayerGame.id")
     endGame(id: ID!): Game
   }
 
@@ -99,11 +100,26 @@ class RandomDie {
   }
 }
 
+class Game {
+  constructor(players) {
+    this.id = short.generate();
+    this.players = players;
+    this.state = 'PENDING';
+  }
+}
+
+
 var app = express();
+
+let game;
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   rootValue: { rollDice: () => { return new RandomDie(); } },
+  mutations: { createGame: (players) => { return game = new Game(players); },
+  startGame: () => { return game.state = 'IN_PROGRESS'; }, 
+  endGame: () => { return game.state = 'COMPLETED'; } 
+},
   graphiql: true,
 }));
 
