@@ -1,0 +1,12 @@
+{
+  "env": {
+    "commonjs": true,
+    "es6": true,
+    "jest": true
+  },
+  "extends": ["standard", "plugin:node/recommended", "plugin:prettier/recommended"],
+  "rules": {
+    "node/no-unpublished-require": "off",
+    "semi": "off"
+  }
+}
