@@ -24,7 +24,7 @@ async function runGraphQLTests(url, progressCallback) {
       progressCallback && progressCallback(report.queryName, 0, queries.length);
 
       // Look for parameter $mytrack.audio.name and extract it
-      const pluggedInQuery = parseParameter(item.query);
+      const pluggedInQuery = parseAndPluginParameter(item.query, responseData);
 
       const res = await queryClient(url, pluggedInQuery);
 
@@ -49,7 +49,7 @@ async function runGraphQLTests(url, progressCallback) {
   return reportData;
 }
 
-function parseParameter(query) {
+function parseAndPluginParameter(query, responseData) {
   const regex = /(\$[^")]*)/;
 
   let matches;
