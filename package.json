@@ -55,5 +55,8 @@
     "node-fetch": "^1.6.3",
     "p-iteration": "^1.1.8",
     "terminal-kit": "^1.43.0"
+  },
+  "engines": {
+    "node": ">10.0"
   }
 }
