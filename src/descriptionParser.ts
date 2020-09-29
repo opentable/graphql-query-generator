@@ -4,6 +4,7 @@ export default {
   /**
    * @example
    *  exports.default.getExamplesFrom('Examples:mycountry:country(cId: 1)') // => ['mycountry:country(cId: 1)']
+   *  exports.default.getExamplesFrom('Examples:mycountry:country(cId: 1) @tag(name:"country")') // => ['mycountry:country(cId: 1) @tag(name:"country")']
    *  exports.default.getExamplesFrom('Examples:country(cId: $mycountry.id)') // => ['country(cId: $mycountry.id)']
    *  exports.default.getExamplesFrom('Emples:country(cId: 1)') // => []
    *  exports.default.getExamplesFrom('Emples:countrycId: 1)') // => []
@@ -23,17 +24,18 @@ export default {
 
     const what = comment.split(examplesSection);
     if (what.length !== 2) return [];
-    const examplesDescription = what[1];
+    const examplesDescription = what[1]; 
     let result : Array<any> = [];
     let matches : any | null = null;
-    const test = new RegExp(/(\s*([ _A-Za-z:]*)\s*\([^)]*\)\s*)/g);
+    const test = new RegExp(/(?<signature>\s*(?<name>[ _A-Za-z:]*)\s*\([^)]*\)\s*)(?<directive>@[A-Za-z]*\(?[A-Za-z:"']*\)?)?\s*/g);
     // Forgive me
     while ((matches = test.exec(examplesDescription)) && matches.length > 1) {
-      result.push(matches[1].trim());
+      result.push(matches[0].trim());
     }
 
     return result;
   },
+
   /**
    * @example
    *  exports.default.shouldFollow('Examples:country(\ncId: 1\n)\n+NOFOLLOW\n') // => false
@@ -51,3 +53,5 @@ export default {
     return description.match(/(^\s*\+NOFOLLOW|\n\s*\+NOFOLLOW)/) === null;
   }
 };
+
+// module.exports.default.getExamplesFrom('Examples:country(cId: 1, cName: "Test")') //?
