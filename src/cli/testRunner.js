@@ -26,7 +26,7 @@ async function runGraphQLTests(url, progressCallback) {
       // Look for parameter $mytrack.audio.name and extract it
       const pluggedInQuery = parseAndPluginParameter(item.query, responseData);
 
-      const res = await queryClient(url, pluggedInQuery);
+      const res = await queryClient(url, pluggedInQuery, item.type);
 
       const response = await res.json();
 

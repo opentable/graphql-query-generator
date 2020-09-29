@@ -12,6 +12,7 @@
   "scripts": {
     "test": "npm run build-ts && npm run jsdoctest && mocha test/ --recursive",
     "test:local": "node bin/cli.js http://localhost:3000/graphql",
+    "test:local:nodemon": "npm run build-ts && nodemon bin/cli.js http://localhost:3000/graphql",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "jsdoctest": "mocha --require jsdoctest lib/"
