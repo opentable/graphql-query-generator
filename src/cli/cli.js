@@ -55,7 +55,7 @@ async function main() {
     reportData.map((report) => [
       report.status === 'passed' ? '^G√' : '',
       `^${report.status === 'passed' ? '-' : 'R'}${report.querySignature}${
-        report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n`
+        report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query}\n\n`
       }`,
     ]),
     {
