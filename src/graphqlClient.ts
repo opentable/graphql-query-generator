@@ -2,7 +2,7 @@ import * as fetch from 'node-fetch';
 
 function createQuery(query, type) {
   if(type !== 'QUERY' && type !== 'MUTATION'){
-    throw new Error('createQuery Unsupported type' + type)
+    throw new Error(`createQuery unsupported type ${type}`)
   }
 
   var body = {
@@ -14,7 +14,7 @@ function createQuery(query, type) {
   return JSON.stringify(body);
 }
 
-export function queryClient(url, graphQuery, type) {
+export function queryClient(url, graphQuery, type = 'QUERY') {
   const queryPromise = fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -1,4 +1,4 @@
-const { runGraphQLTests } = require("../testRunner");
+const { runGraphQLTests } = require("./testRunner");
 const chalk = require("chalk");
 const retry = require("./retryHelper").retry;
 
@@ -62,9 +62,7 @@ async function main() {
   term.table(
     reportData.map((report) => [
       report.status === "passed" ? "^G√" : "",
-      `^${report.status === "passed" ? "-" : "R"}${parseQuerySignature(
-        report.query
-      )}${report.status === "passed" ? "" : `\n\n${report.errors[0]}\n\n`}`,
+      `^${report.status === "passed" ? "-" : "R"}${report.querySignature}${report.status === "passed" ? "" : `\n\n${report.errors[0]}\n\n`}`,
     ]),
     {
       hasBorder: false,

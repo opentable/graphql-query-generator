@@ -1,4 +1,4 @@
-const { queryClient, mutationClient } = require("../graphqlClient");
+const { queryClient } = require("../graphqlClient");
 const QueryGenerator = require("../queryGenerator");
 const { forEachSeries } = require("p-iteration");
 
@@ -10,12 +10,13 @@ async function runGraphQLTests(url, progressCallback) {
 
   const reportData = [];
 
-  const { queries, mutations } = await queryGenerator.run();
+  const { queries } = await queryGenerator.run();
 
-  await forEachSeries(queries, async (query) => {
+  await forEachSeries(queries, async (item) => {
     const report = {
-      query: query,
-      queryName: parseQueryName(query),
+      ...item,
+      queryName: parseQueryName(item.query),
+      querySignature: parseQuerySignature(item.query),
       errors: [],
       status: "in progress",
     };
@@ -24,7 +25,7 @@ async function runGraphQLTests(url, progressCallback) {
       progressCallback && progressCallback(report.queryName, 0, queries.length)
       
       // Look for parameter $mytrack.audio.name and extract it
-      const pluggedInQuery = parseParameter(query);
+      const pluggedInQuery = parseParameter(item.query);
 
       const res = await queryClient(url, pluggedInQuery);
 
