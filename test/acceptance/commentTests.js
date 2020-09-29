@@ -15,7 +15,7 @@ describe('Query generation', () => {
   it('Generates multiple queries', () => {
     return queryPromise
         .then(({queries}) => {
-          (queries[0].match(/rollDice/g) || []).length.should.equal(4);
+          (queries.filter((query)=> query.type === 'QUERY')[0].query.match(/rollDice/g) || []).length.should.equal(4);
         });
 
   });
@@ -23,15 +23,15 @@ describe('Query generation', () => {
   it('Ignores fields with +NOFOLLOW in description', () => {
     return queryPromise
       .then(({queries}) => {
-        (queries[0].match(/ignoredWithExamples/g) || []).length.should.equal(0);
-        (queries[0].match(/ignoredNoParameters/g) || []).length.should.equal(0);
+        (queries.filter((query)=> query.type === 'QUERY')[0].query.match(/ignoredWithExamples/g) || []).length.should.equal(0);
+        (queries.filter((query)=> query.type === 'QUERY')[0].query.match(/ignoredNoParameters/g) || []).length.should.equal(0);
       });
   });
 
   it('Generates multiple mutations', () => {
     return queryPromise
-        .then(({mutations}) => {
-          (mutations[0].match(/createGame/g) || []).length.should.equal(2);
+        .then(({queries}) => {
+          (queries.filter((query)=> query.type === 'MUTATION')[0].query.match(/createGame/g) || []).length.should.equal(2);
         });
   });
 
@@ -39,26 +39,19 @@ describe('Query generation', () => {
     return queryPromise
       .then(({queries}) => {
         // 8 because we have two examples for rollXTimes and 4 examples of parent
-        (queries[0].match(/rollXTimes\(times. [0-9]+\)/g) || []).length.should.equal(8);
+        (queries.filter((query)=> query.type === 'QUERY')[0].query.match(/rollXTimes\(times. [0-9]+\)/g) || []).length.should.equal(8);
       });
   });
 
   it('Calculates valid coverage', () => {
     return queryPromise
-      .then(({queryCoverage, mutationCoverage}) => {
-        queryCoverage.coverageRatio.should.be.at.least(0);
-        queryCoverage.coverageRatio.should.be.at.most(1);
-        if(queryCoverage.coverageRatio < 1.0) {
-          queryCoverage.notCoveredFields.length.should.be.at.least(1);
+      .then(({coverage}) => {
+        coverage.coverageRatio.should.be.at.least(0);
+        coverage.coverageRatio.should.be.at.most(1);
+        if(coverage.coverageRatio < 1.0) {
+          coverage.notCoveredFields.length.should.be.at.least(1);
         } else {
-          queryCoverage.notCoveredFields.length.should.equal(0);
-        }
-        mutationCoverage.coverageRatio.should.be.at.least(0);
-        mutationCoverage.coverageRatio.should.be.at.most(1);
-        if(mutationCoverage.coverageRatio < 1.0) {
-          mutationCoverage.notCoveredFields.length.should.be.at.least(1);
-        } else {
-          mutationCoverage.notCoveredFields.length.should.equal(0);
+          coverage.notCoveredFields.length.should.equal(0);
         }
       });
   });

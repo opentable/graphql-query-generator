@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const {mutationClient, queryClient} = require('../graphqlClient');
+const {queryClient} = require('../graphqlClient');
 const chalk = require('chalk');
 const retry = require('./retryHelper').retry;
 const QueryGenerator = require('../queryGenerator');
@@ -36,16 +36,13 @@ let retryCount = program.retryCount || 0;
 let retrySnoozeTime = program.retrySnoozeTime || 1000;
 
 retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
-  .then(({ queries, queryCoverage, mutations, mutationCoverage }) => {
-    const coverage = { coverageRatio: queryCoverage.coverageRatio * mutationCoverage.coverageRatio, 
-      notCoveredFields: [ ...queryCoverage.notCoveredFields, ...mutationCoverage.notCoveredFields ]
-    };
-    console.log(`Fetched ${queries.length} queries, get to work!`);
-    console.log(`Fetched ${mutations.length} mutations, get to work!`);
+  .then(({ queries, coverage }) => {
+    console.log(`Fetched ${queries.filter((query) => query.type === 'QUERY').length} queries, get to work!`);
+      console.log(`Fetched ${queries.filter((query) => query.type === 'MUTATION').length} mutations, get to work!`);
     
-    const getPromises = function(queries, client=queryClient){
-      return queries.map(query =>
-        client(serverUrl, query)
+    const getPromises = function(queries){
+      return queries.map(item =>
+        queryClient(serverUrl, item.query, item.type)
           .then((res) => res.json())
           .then((result) => {
             if (result.errors) {
@@ -53,7 +50,7 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
             }
 
             if (program.verbose) {
-              console.log(chalk.grey(query));
+              console.log(chalk.grey(item.query));
             }
 
             process.stdout.write('.');
@@ -66,17 +63,15 @@ retry(() => queryGenerator.run(), retryCount, retrySnoozeTime)
               result.errors.forEach(formatError);
               console.log('');
             }
-            console.log(chalk.grey('Full query:\n', query));
+            console.log(chalk.grey('Full query:\n', item.query));
             failedTests++;
           })
       )
     }
 
-    const queryPromises = getPromises(queries, queryClient);
-    const mutationPromises = getPromises(mutations, mutationClient);
-    const allPromises = queryPromises.concat(mutationPromises);
+    const queryPromises = getPromises(queries);
 
-    return maybeSerialisePromises(allPromises)
+    return maybeSerialisePromises(queryPromises)
     .then(() => {
       if (failedTests > 0) {
         console.log(chalk.bold.red(`\n\n\n${failedTests}/${failedTests + passedTests} queries failed.\n`));

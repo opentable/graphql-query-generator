@@ -1,8 +1,12 @@
 import * as fetch from 'node-fetch';
 
-function createMutation(mutation) {
+function createQuery(query, type) {
+  if(type !== 'QUERY' && type !== 'MUTATION'){
+    throw new Error('createQuery Unsupported type' + type)
+  }
+
   var body = {
-    "query": `mutation ${mutation}`,
+    "query": `${type === 'MUTATION' ? 'mutation ' :  ''}${query}`,
     "variables": {},
     "operationName": null
   };
@@ -10,31 +14,11 @@ function createMutation(mutation) {
   return JSON.stringify(body);
 }
 
-function createQuery(query) {
-  var body = {
-    "query": query,
-    "variables": {},
-    "operationName": null
-  };
-
-  return JSON.stringify(body);
-}
-
-export function mutationClient(url, graphMutation) {
+export function queryClient(url, graphQuery, type) {
   const queryPromise = fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: createMutation(graphMutation)
-  });
-
-  return queryPromise;
-}
-
-export function queryClient(url, graphQuery) {
-  const queryPromise = fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: createQuery(graphQuery)
+    body: createQuery(graphQuery, type)
   });
 
   return queryPromise;

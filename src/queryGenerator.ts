@@ -11,7 +11,7 @@ module.exports = function QueryGenerator(url) {
   }
 
   this.run = function () {
-    return queryClient(url, introspectionQuery)
+    return queryClient(url, introspectionQuery, 'QUERY')
       .then((res) => {
         if (!res.ok) {
           return res.text()
@@ -29,7 +29,14 @@ module.exports = function QueryGenerator(url) {
         const mutations = schemaToQueries(mutationTypeName, typeDictionary);
         const queryCoverage = calculateCoverage(queryTypeName, typeDictionary);
         const mutationCoverage = calculateCoverage(mutationTypeName, typeDictionary);
-        return { queries, queryCoverage, mutations, mutationCoverage };
+
+        const queriesAndMutations = [...queries.map(query => ({ type: 'QUERY', query })), ...mutations.map(query => ({ type: 'MUTATION', query }))];
+
+        const coverage = { coverageRatio: queryCoverage.coverageRatio * mutationCoverage.coverageRatio, 
+          notCoveredFields: [ ...queryCoverage.notCoveredFields, ...mutationCoverage.notCoveredFields ]
+        };
+
+        return { queries: queriesAndMutations, coverage };
       });
   };
 };
