@@ -1,8 +1,6 @@
 const { runGraphQLTests } = require("../testRunner");
 const chalk = require("chalk");
 const retry = require("./retryHelper").retry;
-const QueryGenerator = require("../queryGenerator");
-const { forEachSeries } = require("p-iteration");
 
 var term = require("terminal-kit").terminal;
 
@@ -13,7 +11,6 @@ process.title = "gql-query-generator";
 const program = require("commander");
 
 let serverUrl = null;
-const regex = /(\$[^")]*)/;
 
 async function main() {
   program
@@ -88,30 +85,6 @@ async function main() {
 }
 
 main();
-
-function parseQueryName(query) {
-  const regex = /\w*/;
-
-  let matches;
-
-  if ((matches = regex.exec(query)) !== null) {
-    return matches[0];
-  }
-
-  return null;
-}
-
-function parseQuerySignature(query) {
-  const regex = /{\s*([\w @:"'.,$()]*)/;
-
-  let matches;
-
-  if ((matches = regex.exec(query)) !== null) {
-    return matches[1];
-  }
-
-  return null;
-}
 
 
 function formatCoverageData(coverage) {
