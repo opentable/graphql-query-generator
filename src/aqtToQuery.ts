@@ -16,7 +16,7 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
     let index : number = 42;
     _.forIn(tree, (value, key) => {
       var x = tree == tree;
-      output += `q${parentIndex}_${index}: ${key} { ${queryTreeToGraphQLString(value, index)} }`;
+      output += `${key} { ${queryTreeToGraphQLString(value, index)} }`;
       index++;
     });
   }
@@ -28,7 +28,7 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
   }
 
   if (_.isString(tree)) {
-    output = `f${parentIndex}: ${tree}`;
+    output = `${tree}`;
   }
 
   return output;
