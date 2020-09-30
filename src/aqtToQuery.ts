@@ -10,12 +10,12 @@ import * as _ from 'lodash';
  *   // => 'f0: id f1: name q2_42: coordinates { f42: lat f43: long  } q3_42: test { f42: a  } '
  */
 export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
-  let output : string = '';
+  let output = '';
 
   if (_.isObject(tree) && !_.isArray(tree)) {
-    let index : number = 42;
+    let index = 42;
     _.forIn(tree, (value, key) => {
-      var x = tree == tree;
+      const x = tree == tree;
       output += `${key} { ${queryTreeToGraphQLString(value, index)} }`;
       index++;
     });
@@ -32,5 +32,4 @@ export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
   }
 
   return output;
-};
-
+}

@@ -1,12 +1,12 @@
 import introspectionQuery from './introspectionQuery';
-import {queryClient} from './graphqlClient';
+import { queryClient } from './graphqlClient';
 import schemaToQueries from './schemaToQueries';
 import calculateCoverage from './coverageCalculator';
 
-module.exports = function QueryGenerator(url) {
+export default function QueryGenerator(url) {
   function buildTypeDictionary(__schema) {
-    let result = {};
-    __schema.types.forEach(type => result[type.name] = type);
+    const result = {};
+    __schema.types.forEach((type) => (result[type.name] = type));
     return result;
   }
 
@@ -14,14 +14,15 @@ module.exports = function QueryGenerator(url) {
     return queryClient(url, introspectionQuery, 'QUERY')
       .then((res) => {
         if (!res.ok) {
-          return res.text()
-            .then((responseText) => {
-              return Promise.reject(`Introspection query failed with status ${res.status}.\nResponse text:\n${responseText}`);
-            });
+          return res.text().then((responseText) => {
+            return Promise.reject(
+              `Introspection query failed with status ${res.status}.\nResponse text:\n${responseText}`
+            );
+          });
         }
         return res.json();
       })
-      .then(result => {
+      .then((result) => {
         const queryTypeName = result.data['__schema'].queryType.name;
         const mutationTypeName = result.data['__schema'].mutationType.name;
         const typeDictionary = buildTypeDictionary(result.data['__schema']);
@@ -32,13 +33,17 @@ module.exports = function QueryGenerator(url) {
         const queryCoverage = calculateCoverage(queryTypeName, typeDictionary);
         const mutationCoverage = calculateCoverage(mutationTypeName, typeDictionary);
 
-        const queriesAndMutations = [...queries.map(query => ({ type: 'QUERY', query })), ...mutations.map(query => ({ type: 'MUTATION', query }))];
+        const queriesAndMutations = [
+          ...queries.map((query) => ({ type: 'QUERY', query })),
+          ...mutations.map((query) => ({ type: 'MUTATION', query })),
+        ];
 
-        const coverage = { coverageRatio: queryCoverage.coverageRatio * mutationCoverage.coverageRatio, 
-          notCoveredFields: [ ...queryCoverage.notCoveredFields, ...mutationCoverage.notCoveredFields ]
+        const coverage = {
+          coverageRatio: queryCoverage.coverageRatio * mutationCoverage.coverageRatio,
+          notCoveredFields: [...queryCoverage.notCoveredFields, ...mutationCoverage.notCoveredFields],
         };
 
         return { queries: queriesAndMutations, coverage };
       });
   };
-};
+}

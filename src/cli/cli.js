@@ -1,8 +1,8 @@
 const { runGraphQLTests } = require('./testRunner');
 const chalk = require('chalk');
-const retry = require('./retryHelper').retry;
+const { retry } = require('./retryHelper');
 
-var term = require('terminal-kit').terminal;
+const term = require('terminal-kit').terminal;
 
 let progressBar;
 
@@ -16,7 +16,7 @@ async function main() {
   program
     .version(require('../../package.json').version)
     .arguments('<serverUrl>')
-    .action(function (url) {
+    .action((url) => {
       serverUrl = url;
     })
     .option('-v, --verbose', 'Displays all the query information')
@@ -54,8 +54,8 @@ async function main() {
   term.table(
     reportData.map((report) => [
       report.status === 'passed' ? '^G√' : '',
-      `^${report.status === 'passed' ? '-' : 'R'}${report.querySignature}${
-        report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query}\n\n`
+      `^${report.status === 'passed' ? '-' : 'R'}${report.query.signature}${
+        report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query.query}\n\n`
       }`,
     ]),
     {
@@ -70,8 +70,8 @@ async function main() {
   const failedTests = reportData.filter((report) => report.status === 'failed').length;
   const passedTests = reportData.filter((report) => report.status === 'passed').length;
 
-  term.green('\n' + passedTests + ' passing\n');
-  term.red(failedTests + ' failing\n\n');
+  term.green(`\n${passedTests} passing\n`);
+  term.red(`${failedTests} failing\n\n`);
 }
 
 main();
