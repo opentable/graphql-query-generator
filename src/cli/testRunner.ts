@@ -1,27 +1,28 @@
-const { queryClient } = require('../graphqlClient');
-const QueryGenerator = require('../queryGenerator');
-const { forEachSeries } = require('p-iteration');
+import { forEachSeries } from 'p-iteration';
+import { queryClient } from '../graphqlClient';
+import QueryGenerator from '../queryGenerator';
+import GraphQLQuery from './queryClass';
 
-async function runGraphQLTests(url, progressCallback) {
+export async function runGraphQLTests(url: string, progressCallback): Promise<Array<any>> {
   const queryGenerator = new QueryGenerator(url);
 
   let responseData = {};
 
-  const reportData = [];
+  const reportData: Array<any> = [];
 
-  const { queries } = await queryGenerator.run();
+  const { queries: queryStrings } = await queryGenerator.run();
+
+  const queries = queryStrings.map((qs) => new GraphQLQuery(qs.query, qs.type)) as [GraphQLQuery];
 
   await forEachSeries(queries, async (item) => {
     const report = {
-      ...item,
-      queryName: parseQueryName(item.query),
-      querySignature: parseQuerySignature(item.query),
+      query: item,
       errors: [],
       status: 'in progress',
     };
 
     try {
-      progressCallback && progressCallback(report.queryName, 0, queries.length);
+      progressCallback && progressCallback(report.query.name, 0, queries.length);
 
       // Look for parameter $mytrack.audio.name and extract it
       const pluggedInQuery = parseAndPluginParameter(item.query, responseData);
@@ -42,7 +43,7 @@ async function runGraphQLTests(url, progressCallback) {
     } catch (error) {
       logErrorToReport(report, error);
     }
-    progressCallback && progressCallback(report.queryName, 1, queries.length);
+    progressCallback && progressCallback(report.query.name, 1, queries.length);
     reportData.push(report);
   });
 
@@ -58,12 +59,12 @@ function parseAndPluginParameter(query, responseData) {
     const param = match.replace('$', '');
     // Eval using parameter against responseData to get value to plugin
     try {
-      const value = eval('responseData.' + param);
+      const value = eval(`responseData.${param}`);
       // Replace $ parameter with actual value
       const pluggedInQuery = query.replace(match, value);
       return pluggedInQuery;
     } catch {
-      throw Error('could not find ' + match);
+      throw Error(`could not find ${match}`);
     }
   }
   return query;
@@ -75,29 +76,3 @@ function logErrorToReport(report, error) {
   report.status = 'failed';
   // console.log(error);
 }
-
-function parseQueryName(query) {
-  const regex = /\w*/;
-
-  let matches;
-
-  if ((matches = regex.exec(query)) !== null) {
-    return matches[0];
-  }
-
-  return null;
-}
-
-function parseQuerySignature(query) {
-  const regex = /{\s*([\w @:"'.,$()]*)/;
-
-  let matches;
-
-  if ((matches = regex.exec(query)) !== null) {
-    return matches[1];
-  }
-
-  return null;
-}
-
-module.exports.runGraphQLTests = runGraphQLTests;
