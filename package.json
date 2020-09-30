@@ -56,6 +56,7 @@
     "fetch": "^1.1.0",
     "graphql": "^0.9.2",
     "lodash": "^4.17.4",
+    "ms": "^2.1.2",
     "node-fetch": "^1.6.3",
     "p-iteration": "^1.1.8",
     "terminal-kit": "^1.43.0"

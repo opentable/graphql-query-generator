@@ -1,3 +1,5 @@
+const ms = require('ms');
+
 export default class GraphQLQuery {
   readonly query: string;
 
@@ -38,6 +40,15 @@ export default class GraphQLQuery {
       return [matches.groups.tag];
     }
     return [] as string[];
+  }
+
+  get sla(): { responseTime: number } {
+    const regex = new RegExp(/(maxResponseTime:['"](?<responseTime>[\w]*)['"])/g);
+    let matches;
+    if ((matches = regex.exec(this.directive)) !== null && matches.groups.responseTime) {
+      return { responseTime: ms(matches.groups.responseTime) };
+    }
+    return {} as { responseTime: number };
   }
 
   get signature(): string {
