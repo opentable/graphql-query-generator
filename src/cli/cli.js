@@ -54,15 +54,18 @@ async function main() {
   term.table(
     reportData.map((report) => [
       report.status === 'passed' ? '^G√' : '',
-      `^${report.status === 'passed' ? '-' : 'R'}${report.query.signature} ${report.query.sla.responseTime} ${
-        report.run.ms
-      }${report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query.query}\n\n`}`,
+      `^${report.status === 'passed' ? '-' : 'R'}${report.query.signature} ${
+        report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query.query}\n\n`
+      }`,
+      `${report.run.isExpected ? '^G' : '^R'}${report.run.ms}ms ${report.query.sla.responseTime ? 'of ' : ''}${
+        report.query.sla.responseTime || ''
+      }${report.query.sla.responseTime ? 'ms SLA' : ''}`,
     ]),
     {
       hasBorder: false,
       contentHasMarkup: true,
       textAttr: { bgColor: 'default' },
-      width: 150,
+      width: 110,
       fit: true,
     }
   );
