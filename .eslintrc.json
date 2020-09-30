@@ -1,12 +1,22 @@
 {
   "env": {
-    "commonjs": true,
-    "es6": true,
+    "browser": true,
+    "es2020": true,
     "jest": true
   },
-  "extends": ["standard", "plugin:node/recommended", "plugin:prettier/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "node/no-unpublished-require": "off",
     "semi": "off"
   }
 }
