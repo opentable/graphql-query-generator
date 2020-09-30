@@ -17,6 +17,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
   await forEachSeries(queries, async (item) => {
     const report = {
       query: item,
+      run: { start: new Date(), end: new Date(), ms: 0 },
       errors: [],
       status: 'in progress',
     };
@@ -27,7 +28,11 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
       // Look for parameter $mytrack.audio.name and extract it
       const pluggedInQuery = parseAndPluginParameter(item.query, responseData);
 
+      report.run.start = new Date();
       const res = await queryClient(url, pluggedInQuery, item.type);
+      report.run.end = new Date();
+
+      report.run.ms = Math.abs(+report.run.start - +report.run.end);
 
       const response = await res.json();
 

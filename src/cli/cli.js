@@ -54,9 +54,9 @@ async function main() {
   term.table(
     reportData.map((report) => [
       report.status === 'passed' ? '^G√' : '',
-      `^${report.status === 'passed' ? '-' : 'R'}${report.query.signature}${
-        report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query.query}\n\n`
-      }`,
+      `^${report.status === 'passed' ? '-' : 'R'}${report.query.signature} ${report.query.sla.responseTime} ${
+        report.run.ms
+      }${report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query.query}\n\n`}`,
     ]),
     {
       hasBorder: false,
