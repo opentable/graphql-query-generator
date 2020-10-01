@@ -53,13 +53,15 @@ async function main() {
   term.bold('\nAPIs\n\n');
   term.table(
     reportData.map((report) => [
-      report.status === 'passed' ? '^G√' : '',
-      `^${report.status === 'passed' ? '-' : 'R'}${report.query.signature} ${
-        report.status === 'passed' ? '' : `\n\n${report.errors[0]}\n\n${report.query.query}\n\n`
+      report.status === 'passed' && report.run.isExpected ? '^G√' : '',
+      `^${report.status === 'passed' && report.run.isExpected ? '-' : 'R'}${report.query.signature} ${
+        report.status === 'passed' && report.run.isExpected
+          ? ''
+          : `\n\n${report.errors[0] || 'SLA response time not met'}\n\n${report.query.query}\n\n`
       }`,
-      `${report.run.isExpected ? '^G' : '^R'}${report.run.ms}ms ${report.query.sla.responseTime ? 'of ' : ''}${
+      `${report.run.isExpected ? '^G' : '^R'}${report.run.ms}ms ${!report.run.isExpected ? 'of ' : ''}${
         report.query.sla.responseTime || ''
-      }${report.query.sla.responseTime ? 'ms SLA' : ''}`,
+      }${!report.run.isExpected ? 'ms SLA' : ''}`,
     ]),
     {
       hasBorder: false,

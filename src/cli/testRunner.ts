@@ -34,9 +34,9 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
 
       report.run.ms = Math.abs(+report.run.start - +report.run.end);
       report.run.isExpected = Boolean(report.run.ms <= (report.query.sla.responseTime || 3000));
-      if (!report.run.isExpected) {
-        throw new Error('response time exceeded SLA');
-      }
+      // if (!report.run.isExpected) {
+      //   throw new Error('response time exceeded SLA');
+      // }
 
       const response = await res.json();
 
