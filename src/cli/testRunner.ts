@@ -26,9 +26,26 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
     });
   });
 
-  // Walk dependency chain and reorder
+  // Walk dependency tree depth first to reorder
+  const walkDependents = (queries: GraphQLQuery[]): GraphQLQuery[] => {
+    if (!queries.length) {
+      return [];
+    }
+    let visited: GraphQLQuery[] = [];
+    queries.forEach((query) => {
+      if (!query.isVisited) {
+        visited = visited.concat(walkDependents(query.dependents));
+        query.isVisited = true;
+        visited.push(query);
+      }
+    });
 
-  await forEachSeries(queries, async (item) => {
+    return visited;
+  };
+
+  const orderedQueries = walkDependents(queries);
+
+  await forEachSeries(orderedQueries, async (item) => {
     const report = {
       query: item,
       run: { start: new Date(), end: new Date(), ms: 0, isExpected: true },
@@ -37,10 +54,10 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
     };
 
     try {
-      progressCallback && progressCallback(report.query.name, 0, queries.length);
+      progressCallback && progressCallback(report.query.name, 0, orderedQueries.length);
 
       // Look for parameter $mytrack.audio.name and plug it in
-      const pluggedInQuery = pluginParameter(item.query, responseData);
+      const pluggedInQuery = pluginParameter(item, responseData);
 
       report.run.start = new Date();
       const res = await queryClient(url, pluggedInQuery, item.type);
@@ -66,7 +83,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
     } catch (error) {
       logErrorToReport(report, error);
     }
-    progressCallback && progressCallback(report.query.name, 1, queries.length);
+    progressCallback && progressCallback(report.query.name, 1, orderedQueries.length);
     reportData.push(report);
   });
 
@@ -80,7 +97,7 @@ function pluginParameter(query, responseData) {
     try {
       const value = eval(`responseData.${param}`);
       // Replace $ parameter with actual value
-      const pluggedInQuery = query.replace(param, value);
+      const pluggedInQuery = query.query.replace('$' + param, value);
       return pluggedInQuery;
     } catch {
       throw Error(`could not find $${param}`);

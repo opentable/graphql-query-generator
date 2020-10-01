@@ -17,6 +17,8 @@ export default class GraphQLQuery {
 
   readonly dependents: Array<GraphQLQuery> = [];
 
+  isVisited = false;
+
   constructor(query: string, type: string) {
     this.type = type;
     const regex = new RegExp(
