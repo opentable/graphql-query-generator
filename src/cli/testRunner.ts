@@ -128,7 +128,19 @@ function pluginParameter(query, responseData) {
     const param = query.parameters[0];
     // Eval using parameter against responseData to get value to plugin
     try {
-      const value = eval(`responseData.${param}`);
+      const parts = param.split('.');
+      let currentField = '';
+      let reference = responseData;
+      parts.forEach((part) => {
+        if (Array.isArray(reference)) {
+          reference = reference[0];
+          currentField += '[0]';
+        }
+        reference = reference[part];
+        currentField += '.' + part;
+      });
+
+      const value = reference;
       // Replace $ parameter with actual value
       const pluggedInQuery = query.query.replace('$' + param, value);
       return pluggedInQuery;
