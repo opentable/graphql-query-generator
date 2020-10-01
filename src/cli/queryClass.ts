@@ -13,6 +13,10 @@ export default class GraphQLQuery {
 
   readonly args: string;
 
+  readonly parameters: string[] = [];
+
+  readonly dependents: Array<GraphQLQuery> = [];
+
   constructor(query: string, type: string) {
     this.type = type;
     const regex = new RegExp(
@@ -30,6 +34,12 @@ export default class GraphQLQuery {
       this.directive = groups.directive;
       this.args = groups.args;
       this.query = query.replace(this.directive, '');
+
+      let paramMatches;
+      if ((paramMatches = /(\$[^")]*)/.exec(this.args)) !== null) {
+        const match = paramMatches[0];
+        this.parameters = [match.replace('$', '')];
+      }
     }
   }
 
@@ -55,5 +65,5 @@ export default class GraphQLQuery {
     return `${this.name}${this.args}`;
   }
 
-  public toString = (): string => `${this.alias || ''}${this.alias ? ':' : ''}${this.name}${this.args}`;
+  public toString = (): string => `${this.query}`;
 }

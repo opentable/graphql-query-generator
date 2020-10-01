@@ -14,6 +14,20 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
 
   const queries = queryStrings.map((qs) => new GraphQLQuery(qs.query, qs.type)) as [GraphQLQuery];
 
+  // Setup dependent queries
+  queries.forEach((query) => {
+    query.parameters.forEach((parameter) => {
+      // Get the variable/alias name from the param string
+      const [alias] = parameter.split('.');
+      const dependent = queries.find((query) => query.alias === alias);
+      if (dependent) {
+        query.dependents.push(dependent);
+      }
+    });
+  });
+
+  // Walk dependency chain and reorder
+
   await forEachSeries(queries, async (item) => {
     const report = {
       query: item,
@@ -25,8 +39,8 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
     try {
       progressCallback && progressCallback(report.query.name, 0, queries.length);
 
-      // Look for parameter $mytrack.audio.name and extract it
-      const pluggedInQuery = parseAndPluginParameter(item.query, responseData);
+      // Look for parameter $mytrack.audio.name and plug it in
+      const pluggedInQuery = pluginParameter(item.query, responseData);
 
       report.run.start = new Date();
       const res = await queryClient(url, pluggedInQuery, item.type);
@@ -59,21 +73,17 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
   return reportData;
 }
 
-function parseAndPluginParameter(query, responseData) {
-  const regex = /(\$[^")]*)/;
-
-  let matches;
-  if ((matches = regex.exec(query)) !== null) {
-    const match = matches[0];
-    const param = match.replace('$', '');
+function pluginParameter(query, responseData) {
+  if (query.parameters.length > 0) {
+    const param = query.parameters[0];
     // Eval using parameter against responseData to get value to plugin
     try {
       const value = eval(`responseData.${param}`);
       // Replace $ parameter with actual value
-      const pluggedInQuery = query.replace(match, value);
+      const pluggedInQuery = query.replace(param, value);
       return pluggedInQuery;
     } catch {
-      throw Error(`could not find ${match}`);
+      throw Error(`could not find $${param}`);
     }
   }
   return query;
