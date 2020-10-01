@@ -34,7 +34,7 @@ async function main() {
   const reportData = await runGraphQLTests(serverUrl, (name, percentComplete, totalQueries) => {
     if (!progressBar) {
       progressBar = term.progressBar({
-        width: 120,
+        width: 80,
         title: 'GraphQL API Tests:',
         eta: false,
         percent: true,
@@ -50,30 +50,30 @@ async function main() {
     }
   });
 
-  term.bold('\nAPIs\n\n');
+  term.bold('\n\nAPIs\n\n');
   term.table(
     reportData.map((report) => [
-      report.status === 'passed' && report.run.isExpected ? '^G√ ' : '',
-      `^${report.status === 'passed' && report.run.isExpected ? '-' : 'R'}${report.query.signature} ${
-        report.status === 'passed' && report.run.isExpected
+      report.status === 'passed' && report.run.meetsSLA ? '^G√ ' : '',
+      `^${report.status === 'passed' && report.run.meetsSLA ? '-' : 'R'}${report.query.signature} ${
+        report.status === 'passed' && report.run.meetsSLA
           ? ''
-          : `\n\n${report.errors[0] || 'SLA response time not met'}\n\n${report.query.query}\n\n`
+          : `\n\n${report.errors.length ? report.errors[0] + '\n' : ''}${
+              !report.run.meetsSLA ? `SLA response time ${report.query.sla.responseTime}ms exceeded` : ''
+            }\n\n${report.errors.length ? report.query.query + '\n\n' : ''}`
       }`,
-      `${report.run.isExpected ? '^G' : '^R'}${report.run.ms}ms ${!report.run.isExpected ? 'of ' : ''}${
-        report.query.sla.responseTime || ''
-      }${!report.run.isExpected ? 'ms SLA' : ''}`,
+      `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),
     {
       hasBorder: false,
       contentHasMarkup: true,
       textAttr: { bgColor: 'default' },
-      width: 100,
+      width: 80,
       fit: true,
     }
   );
 
-  const failedTests = reportData.filter((report) => report.status === 'failed').length;
-  const passedTests = reportData.filter((report) => report.status === 'passed').length;
+  const failedTests = reportData.filter((report) => report.status === 'failed' || !report.run.meetsSLA).length;
+  const passedTests = reportData.filter((report) => report.status === 'passed' && report.run.meetsSLA).length;
 
   term.green(`\n${passedTests} passing\n`);
   term.red(`${failedTests} failing\n\n`);

@@ -48,7 +48,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
   await forEachSeries(orderedQueries, async (item) => {
     const report = {
       query: item,
-      run: { start: new Date(), end: new Date(), ms: 0, isExpected: true },
+      run: { start: new Date(), end: new Date(), ms: 0, meetsSLA: true },
       errors: [],
       status: 'in progress',
     };
@@ -64,7 +64,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
       report.run.end = new Date();
 
       report.run.ms = Math.abs(+report.run.start - +report.run.end);
-      report.run.isExpected = Boolean(report.run.ms <= (report.query.sla.responseTime || 3000));
+      report.run.meetsSLA = Boolean(report.run.ms <= (report.query.sla.responseTime || 15000));
       // if (!report.run.isExpected) {
       //   throw new Error('response time exceeded SLA');
       // }
