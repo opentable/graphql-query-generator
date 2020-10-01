@@ -1,7 +1,7 @@
 import { forEachSeries } from 'p-iteration';
 import { queryClient } from '../graphqlClient';
 import QueryGenerator from '../queryGenerator';
-import GraphQLQuery from './queryClass';
+import GraphQLQuery from '../queryClass';
 
 export async function runGraphQLTests(url: string, progressCallback): Promise<Array<any>> {
   const queryGenerator = new QueryGenerator(url);
@@ -50,7 +50,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
       query: item,
       run: { start: new Date(), end: new Date(), ms: 0, meetsSLA: true },
       errors: [],
-      status: 'in progress',
+      status: 'passed',
     };
 
     try {
@@ -64,7 +64,8 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
       report.run.end = new Date();
 
       report.run.ms = Math.abs(+report.run.start - +report.run.end);
-      report.run.meetsSLA = Boolean(report.run.ms <= (report.query.sla.responseTime || 15000));
+      const sla = report.query.sla;
+      report.run.meetsSLA = Boolean(report.run.ms <= (sla ? sla.responseTime : 15000));
       // if (!report.run.isExpected) {
       //   throw new Error('response time exceeded SLA');
       // }
@@ -78,7 +79,39 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
       } else {
         // Store responses in memory so they can be used for an argument to another query/mutation call
         responseData = { ...responseData, ...response.data };
-        report.status = 'passed';
+
+        const minimums = item.ensureMinimum;
+        // Ensure minimums are met
+        if (minimums) {
+          minimums.arrays.forEach((field) => {
+            const parts = field.split('.');
+            let currentField = '';
+            let reference = response.data;
+            parts.forEach((part) => {
+              if (Array.isArray(reference)) {
+                const isValid = reference.length >= minimums.items;
+                console.log(currentField, isValid);
+                if (!isValid) {
+                  logErrorToReport(
+                    report,
+                    `${currentField} array (length ${reference.length}) did not meet min length ${minimums.items}`
+                  );
+                }
+                reference = reference[0];
+                currentField += '[0]';
+              }
+              reference = reference[part];
+              currentField += '.' + part;
+            });
+            const isValid = reference.length >= minimums.items;
+            if (!isValid) {
+              logErrorToReport(
+                report,
+                `${currentField} array (length ${reference.length}) did not meet min length ${minimums.items}`
+              );
+            }
+          });
+        }
       }
     } catch (error) {
       logErrorToReport(report, error);
