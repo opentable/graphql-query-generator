@@ -53,7 +53,7 @@ async function main() {
   term.bold('\nAPIs\n\n');
   term.table(
     reportData.map((report) => [
-      report.status === 'passed' && report.run.isExpected ? '^G√' : '',
+      report.status === 'passed' && report.run.isExpected ? '^G√ ' : '',
       `^${report.status === 'passed' && report.run.isExpected ? '-' : 'R'}${report.query.signature} ${
         report.status === 'passed' && report.run.isExpected
           ? ''
@@ -67,7 +67,7 @@ async function main() {
       hasBorder: false,
       contentHasMarkup: true,
       textAttr: { bgColor: 'default' },
-      width: 110,
+      width: 100,
       fit: true,
     }
   );
