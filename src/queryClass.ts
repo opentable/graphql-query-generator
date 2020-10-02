@@ -37,10 +37,12 @@ export default class GraphQLQuery {
       this.args = groups.args;
       this.query = query.replace(this.directive, '');
 
+      const paramRegex = new RegExp(/(\$[^")]*)/g);
+
       let paramMatches;
-      if ((paramMatches = /(\$[^")]*)/.exec(this.args)) !== null) {
+      while ((paramMatches = paramRegex.exec(this.args)) && paramMatches.length > 1) {
         const match = paramMatches[0];
-        this.parameters = [match.replace('$', '')];
+        this.parameters.push(match.replace('$', ''));
       }
     }
   }

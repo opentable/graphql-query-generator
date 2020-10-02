@@ -63,7 +63,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
       progressCallback && progressCallback(report.query.name, 0, orderedQueries.length);
 
       // Look for parameter $mytrack.audio.name and plug it in
-      const pluggedInQuery = pluginParameter(item, responseData);
+      const pluggedInQuery = pluginParameters(item, responseData);
 
       report.run.start = new Date();
       const res = await queryClient(url, pluggedInQuery, item.type);
@@ -81,7 +81,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
       const hasErrors = response.errors;
 
       if (hasErrors) {
-        response.errors.map((error) => logErrorToReport(report, error));
+        response.errors.map((error) => logErrorToReport(report, 'API Error: ' + error.message));
       } else {
         // Store responses in memory so they can be used for an argument to another query/mutation call
         responseData = { ...responseData, ...response.data };
@@ -129,9 +129,9 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
   return reportData;
 }
 
-function pluginParameter(query, responseData) {
-  if (query.parameters.length > 0) {
-    const param = query.parameters[0];
+function pluginParameters(query, responseData) {
+  let pluggedInQuery = query.query;
+  query.parameters.forEach((param) => {
     // Eval using parameter against responseData to get value to plugin
     try {
       const parts = param.split('.');
@@ -148,13 +148,12 @@ function pluginParameter(query, responseData) {
 
       const value = reference;
       // Replace $ parameter with actual value
-      const pluggedInQuery = query.query.replace('$' + param, value);
-      return pluggedInQuery;
+      pluggedInQuery = pluggedInQuery.replace('$' + param, value);
     } catch {
       throw Error(`could not find $${param}`);
     }
-  }
-  return query;
+  });
+  return pluggedInQuery;
 }
 
 function logErrorToReport(report, error) {
