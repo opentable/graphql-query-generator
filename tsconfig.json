@@ -9,7 +9,8 @@
     "target": "es6", // specify ECMAScript target version
     "types": ["node"],
     "typeRoots": ["node_modules/@types"],
-    "allowJs": true // allow a partial TypeScript and JavaScript codebase
+    "allowJs": true, // allow a partial TypeScript and JavaScript codebase
+    "esModuleInterop": true // Allow importing ess lib
   },
   "include": ["./src/"]
 }

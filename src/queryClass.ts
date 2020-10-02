@@ -1,4 +1,4 @@
-const ms = require('ms');
+import ms from 'ms';
 
 export default class GraphQLQuery {
   readonly query: string;
