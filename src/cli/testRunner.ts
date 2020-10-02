@@ -43,7 +43,13 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
     return visited;
   };
 
-  const orderedQueries = walkDependents(queries);
+  const notLastQueries = queries.filter((query) => !query.isLast);
+  const lastQueries = queries.filter((query) => query.isLast);
+
+  const notLastOrdered = walkDependents(notLastQueries);
+  const lastOrdered = walkDependents(lastQueries);
+
+  const orderedQueries = notLastOrdered.concat(lastOrdered);
 
   await forEachSeries(orderedQueries, async (item) => {
     const report = {

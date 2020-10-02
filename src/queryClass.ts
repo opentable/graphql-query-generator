@@ -50,6 +50,11 @@ export default class GraphQLQuery {
     return tag ? [tag] : [];
   }
 
+  get isLast(): boolean {
+    const last = getRegexMatchGroup(new RegExp(/(?<last>@last)/g), this.directive, 'last');
+    return Boolean(last);
+  }
+
   get sla(): { responseTime: number } | null {
     const responseTime = getRegexMatchGroup(
       new RegExp(/(maxResponseTime:['"](?<responseTime>[\w]*)['"])/g),
