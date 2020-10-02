@@ -36,7 +36,7 @@ async function main() {
       progressBar = term.progressBar({
         width: 80,
         title: 'GraphQL API Tests:',
-        eta: false,
+        eta: true,
         percent: true,
         items: totalQueries,
       });
@@ -59,7 +59,7 @@ async function main() {
           ? ''
           : `\n\n${report.errors.length ? report.errors[0] + '\n' : ''}${
               !report.run.meetsSLA ? `SLA response time ${report.query.sla.responseTime}ms exceeded` : ''
-            }\n\n${report.errors.length ? report.query.query + '\n\n' : ''}`
+            }\n\n${report.errors.length && false ? report.query.query + '\n\n' : ''}`
       }`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),
