@@ -3,6 +3,8 @@ import ms from 'ms';
 export default class GraphQLQuery {
   readonly query: string;
 
+  pluggedInQuery: string;
+
   readonly type: string;
 
   readonly alias: string;
@@ -20,19 +22,17 @@ export default class GraphQLQuery {
   isVisited = false;
 
   constructor(query: string, type: string) {
+    let alias, name;
     this.type = type;
+
     const regex = new RegExp(
       /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directive>@[\w]*\([^)]*\))*/g
     );
     let matches;
     if ((matches = regex.exec(query)) !== null) {
       const { groups } = matches;
-      if (groups.alias && !groups.name) {
-        groups.name = groups.alias;
-        groups.alias = undefined;
-      }
-      this.alias = groups.alias;
-      this.name = groups.name;
+      alias = groups.alias;
+      name = groups.name;
       this.directive = groups.directive;
       this.args = groups.args;
       this.query = query.replace(this.directive, '');
@@ -44,7 +44,26 @@ export default class GraphQLQuery {
         const match = paramMatches[0];
         this.parameters.push(match.replace('$', ''));
       }
+    } else {
+      let matches;
+      if ((matches = new RegExp(/{\s*(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*}/g).exec(query)) !== null) {
+        alias = matches.groups['alias'];
+        name = matches.groups['name'];
+      }
+      this.query = query;
     }
+
+    // If there's an alias and no name
+    // They got mixed up.
+    if (alias && !name) {
+      this.name = alias;
+      this.alias = name;
+    } else {
+      this.name = name;
+      this.alias = alias;
+    }
+
+    this.pluggedInQuery = this.query;
   }
 
   get tags(): string[] {
@@ -82,7 +101,7 @@ export default class GraphQLQuery {
   }
 
   get signature(): string {
-    return `${this.name}${this.args}`;
+    return `${this.name}${this.args || ''}`;
   }
 
   public toString = (): string => `${this.query}`;

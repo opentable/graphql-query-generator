@@ -1,16 +1,16 @@
-const { runGraphQLTests } = require('./testRunner');
-const chalk = require('chalk');
-const { retry } = require('./retryHelper');
+import { runGraphQLTests } from './testRunner';
+import chalk from 'chalk';
+import { retry } from './retryHelper';
+import { Command } from 'commander';
+import { terminal as term } from 'terminal-kit';
 
-const term = require('terminal-kit').terminal;
+const program = new Command();
 
 let progressBar;
 
 process.title = 'gql-query-generator';
 
-const program = require('commander');
-
-let serverUrl = null;
+let serverUrl = '';
 
 async function main() {
   program
@@ -59,7 +59,7 @@ async function main() {
           ? ''
           : `\n\n${report.errors.length ? report.errors[0] + '\n' : ''}${
               !report.run.meetsSLA ? `SLA response time ${report.query.sla.responseTime}ms exceeded` : ''
-            }\n\n${report.errors.length && false ? report.query.query + '\n\n' : ''}`
+            }\n\n${report.errors.length ? report.query.pluggedInQuery + '\n\n' : ''}`
       }`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),

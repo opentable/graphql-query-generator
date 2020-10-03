@@ -1,5 +1,5 @@
 {
   "watch": ["src"],
   "ext": "ts js",
-  "exec": "ts-node src/cli/cli.js http://localhost:3000/graphql"
+  "exec": "ts-node src/cli/cli.ts http://localhost:3000/graphql"
 }
