@@ -51,9 +51,6 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
 
   const orderedQueries = notLastOrdered.concat(lastOrdered);
 
-  const und = orderedQueries.filter((q) => q.name === undefined);
-  console.log(und);
-
   await forEachSeries(orderedQueries, async (item) => {
     const report = {
       query: item,
