@@ -1,6 +1,6 @@
-const should = require('chai').should();
-const app = require('./exampleServer');
-import QueryGenerator from '../../src/queryGenerator');
+import should from 'chai';
+import app from './exampleServer';
+import QueryGenerator from '../../src/queryGenerator';
 
 describe('Query generation', () => {
   const serverUrl = 'http://localhost:12345/graphql';

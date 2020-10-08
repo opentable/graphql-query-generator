@@ -1,9 +1,9 @@
-var express = require('express');
-var graphqlHTTP = require('express-graphql');
-var { buildSchema } = require('graphql');
-const short = require('short-uuid');
+import express from 'express';
+import graphqlHTTP from 'express-graphql';
+import { buildSchema } from 'graphql';
+import short from 'short-uuid';
 
-var schema = buildSchema(`
+const schema = buildSchema(`
 
   type IgnoredSubtype {
     aValue: Int
@@ -108,7 +108,7 @@ class Game {
   }
 }
 
-var app = express();
+const app = express();
 
 let game;
 
