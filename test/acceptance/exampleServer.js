@@ -20,8 +20,8 @@ var schema = buildSchema(`
 
     # Scalar field with non nullable arg and example section
     # Examples:
-    # rollXTimes(times: 10)
-    # rollXTimes(times: 11)
+    # firstRoll: rollXTimes(times: 10)
+    # secondRoll: rollXTimes(times: 11)
     rollXTimes(times: Int!): Int!
 
     # A description for ignored field with parameters
@@ -39,10 +39,10 @@ var schema = buildSchema(`
     # RollDice has four examples
     #
     # Examples:
-    # rollDice(numDice: 4, numSides: 2)
-    # rollDice( numDice : 40 , numSides:2)
-    # rollDice ( numDice: 2, numSides: 299 )
-    # rollDice (
+    # roll1: rollDice(numDice: 4, numSides: 2)
+    # roll2: rollDice( numDice : 40 , numSides:2)
+    # roll3: rollDice ( numDice: 2, numSides: 299 )
+    # roll4: rollDice (
     #   numDice:4,
     #   numSides: 2342
     # )
@@ -51,7 +51,7 @@ var schema = buildSchema(`
 
   type Mutation {
     # Examples:
-    # createGame(players: 4)
+    # fourPlayerGame:createGame(players: 4)
     # twoPlayerGame:createGame(players: 2)
     createGame(players: Int!): Game
 
