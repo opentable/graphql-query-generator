@@ -8,7 +8,7 @@ export default {
    *  exports.default.getExamplesFrom('Examples:mycountry:country(cId: 1)') // => ['mycountry:country(cId: 1)']
    *  exports.default.getExamplesFrom('Examples:mycountry:country(cId: 1) @tag(name:"country")') // => ['mycountry:country(cId: 1) @tag(name:"country")']
    *  exports.default.getExamplesFrom('Examples:mycountry:country(cId: 1) @ensureMinimum(nItems: 1, inArrays: ["job.playlists", job.tagSets", "job.tagSets.tags"])') // => ['mycountry:country(cId: 1) @ensureMinimum(nItems: 1, inArrays: ["job.playlists", job.tagSets", "job.tagSets.tags"])']
-   *  exports.default.getExamplesFrom('Examples:country(cId: $mycountry.id)') // => ['country(cId: $mycountry.id)']
+   *  exports.default.getExamplesFrom('Examples:country(cId: "{{mycountry.id}}")') // => ['country(cId: "{{mycountry.id}}")']
    *  exports.default.getExamplesFrom('Emples:country(cId: 1)') // => []
    *  exports.default.getExamplesFrom('Emples:countrycId: 1)') // => []
    *  exports.default.getExamplesFrom('Examples:country(cId: 1)') // => ['country(cId: 1)']

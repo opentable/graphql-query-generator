@@ -56,11 +56,11 @@ var schema = buildSchema(`
     createGame(players: Int!): Game
 
     # Examples:
-    # startGame(id: "$twoPlayerGame.id")
+    # startGame(id: "{{twoPlayerGame.id}}")
     startGame(id: ID!) : Game
 
     # Examples:
-    # endGame(id: "$twoPlayerGame.id")
+    # endGame(id: "{{twoPlayerGame.id}}")
     endGame(id: ID!): Game
   }
 
@@ -85,14 +85,14 @@ class IgnoredSubtype {
 
 class RandomnessStatistics {
   constructor() {
-    this.explanation = "Because we can";
+    this.explanation = 'Because we can';
   }
 }
 
 class RandomDie {
   constructor() {
-    this.numSides = 4;  // chosen by fair dice roll
-    this.rollOnce = 1;  // guaranteed to be random
+    this.numSides = 4; // chosen by fair dice roll
+    this.rollOnce = 1; // guaranteed to be random
     this.rollXTimes = () => 12;
     this.statistics = () => new RandomnessStatistics();
     this.ignoredWithExamples = () => new IgnoredSubtype();
@@ -108,22 +108,33 @@ class Game {
   }
 }
 
-
 var app = express();
 
 let game;
 
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: { rollDice: () => { return new RandomDie(); } },
-  mutations: { createGame: (players) => { return game = new Game(players); },
-  startGame: () => { return game.state = 'IN_PROGRESS'; }, 
-  endGame: () => { return game.state = 'COMPLETED'; } 
-},
-  graphiql: true,
-}));
-
-
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: {
+      rollDice: () => {
+        return new RandomDie();
+      },
+    },
+    mutations: {
+      createGame: (players) => {
+        return (game = new Game(players));
+      },
+      startGame: () => {
+        return (game.state = 'IN_PROGRESS');
+      },
+      endGame: () => {
+        return (game.state = 'COMPLETED');
+      },
+    },
+    graphiql: true,
+  })
+);
 
 module.exports = new Promise((resolve, reject) => {
   app.listen(12345, resolve);

@@ -62,7 +62,7 @@ export async function runGraphQLTests(url: string, progressCallback): Promise<Ar
     try {
       progressCallback && progressCallback(report.query.name, 0, orderedQueries.length);
 
-      // Look for parameter $mytrack.audio.name and plug it in
+      // Look for parameter {{mytrack.audio.name}} and plug it in
       item.pluggedInQuery = pluginParameters(item, responseData);
 
       report.run.start = new Date();
@@ -147,10 +147,10 @@ function pluginParameters(query, responseData) {
       });
 
       const value = reference;
-      // Replace $ parameter with actual value
-      pluggedInQuery = pluggedInQuery.replace('$' + param, value);
+      // Replace {{parameter}} with actual value
+      pluggedInQuery = pluggedInQuery.replace(`{{${param}}}`, value);
     } catch {
-      throw Error(`could not find $${param}`);
+      throw Error(`could not find {{${param}}}`);
     }
   });
   return pluggedInQuery;
