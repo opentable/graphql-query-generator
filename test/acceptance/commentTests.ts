@@ -53,7 +53,7 @@ describe('Query generation', () => {
       if (coverage.coverageRatio < 1.0) {
         coverage.notCoveredFields.length.should.be.at.least(1);
       } else {
-        coverage.notCoveredFields.length.should.equal(0);
+        coverage.notCoveredFields.length).toBe(0);
       }
     });
   });

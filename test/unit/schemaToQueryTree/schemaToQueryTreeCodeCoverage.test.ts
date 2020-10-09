@@ -1,10 +1,8 @@
-import chai from 'chai';
-chai.should();
 import { getQueryFields, getQueryFieldsModes } from '../../../src/schemaToQueryTree';
 import mockData from '../mockData';
 
 describe('Build coverage', () => {
-  let typeDictionary = null;
+  let typeDictionary;
 
   beforeEach(() => {
     typeDictionary = mockData;
@@ -23,8 +21,8 @@ describe('Build coverage', () => {
       typeDictionary,
       []
     );
-    result.length.should.equal(9);
-    result.filter((r) => r.indexOf('NOFollowPart') > 0).length.should.equal(1);
+    expect(result.length).toBe(9);
+    expect(result.filter((r) => r.indexOf('NOFollowPart') > 0).length).toBe(1);
   });
 
   it('should be able to fetch only queryable fields', () => {
@@ -40,8 +38,8 @@ describe('Build coverage', () => {
       typeDictionary,
       []
     );
-    result.length.should.equal(4);
-    result.filter((r) => r.indexOf('NOFollowPart') > 0).length.should.equal(0);
+    expect(result.length).toBe(4);
+    expect(result.filter((r) => r.indexOf('NOFollowPart') > 0).length).toBe(0);
   });
 
   it('should not return querable fields if root object is not querable', () => {
@@ -70,6 +68,6 @@ describe('Build coverage', () => {
       typeDictionary,
       []
     );
-    result.length.should.equal(0);
+    expect(result.length).toBe(0);
   });
 });

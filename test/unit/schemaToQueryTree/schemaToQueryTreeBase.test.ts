@@ -1,27 +1,26 @@
-import chai from 'chai';
-chai.should();
-import { should } from 'chai';
 import { buildQueryTreeFromField } from '../../../src/schemaToQueryTree';
 import mockData from '../mockData';
 
 describe('Build query tree from field', () => {
-  let typeDictionary = null;
+  let typeDictionary;
 
   beforeEach(() => {
     typeDictionary = mockData;
   });
 
   it('should handle simple fields', () => {
-    buildQueryTreeFromField(
-      {
-        type: {
-          name: 'ScalarField',
+    expect(
+      buildQueryTreeFromField(
+        {
+          type: {
+            name: 'ScalarField',
+          },
+          name: 'FetchParentField',
+          args: [],
         },
-        name: 'FetchParentField',
-        args: [],
-      },
-      typeDictionary
-    ).should.deep.equal(['FetchParentField']);
+        typeDictionary
+      )
+    ).toEqual(['FetchParentField']);
   });
 
   it('should handle simple objects', () => {
@@ -37,10 +36,10 @@ describe('Build query tree from field', () => {
       typeDictionary,
       ignoreList
     );
-    result.MyObjectField[0].should.deep.equal(['MyScalar']);
-    result.MyObjectField[1].should.deep.equal(['MyScalar2']);
-    //ignoreList.length.should.equal(1);
-    //ignoreList[0].should.equal('MyObjectField-ObjectField-ROOT');
+    expect(result.MyObjectField[0]).toEqual(['MyScalar']);
+    expect(result.MyObjectField[1]).toEqual(['MyScalar2']);
+    expect(ignoreList.length).toEqual(1);
+    expect(ignoreList[0]).toEqual('MyObjectField-ObjectField-ROOT');
   });
 
   it('should handle nested objects', () => {
@@ -56,13 +55,13 @@ describe('Build query tree from field', () => {
       typeDictionary,
       ignoreList
     );
-    result.MyObjectWithNested[0].should.include.all.keys('NestedObject');
-    result.MyObjectWithNested[0].NestedObject[0].should.deep.equal(['MyScalar']);
-    result.MyObjectWithNested[0].NestedObject[1].should.deep.equal(['MyScalar2']);
-    result.MyObjectWithNested[1].should.deep.equal(['NestedScalar']);
-    // ignoreList.length.should.equal(2);
-    // ignoreList[0].should.equal('MyObjectWithNested-ObjectNestingOtherObject-ROOT');
-    // ignoreList[1].should.equal('NestedObject-ObjectField-ObjectNestingOtherObject');
+    expect(result.MyObjectWithNested[0]).toHaveProperty('NestedObject');
+    expect(result.MyObjectWithNested[0].NestedObject[0]).toEqual(['MyScalar']);
+    expect(result.MyObjectWithNested[0].NestedObject[1]).toEqual(['MyScalar2']);
+    expect(result.MyObjectWithNested[1]).toEqual(['NestedScalar']);
+    expect(ignoreList.length).toEqual(2);
+    expect(ignoreList[0]).toEqual('MyObjectWithNested-ObjectNestingOtherObject-ROOT');
+    expect(ignoreList[1]).toEqual('NestedObject-ObjectField-ObjectNestingOtherObject');
   });
 
   it('should handle circular dependencies', () => {
@@ -78,11 +77,11 @@ describe('Build query tree from field', () => {
       typeDictionary,
       ignoreList
     );
-    result.MyCircle.length.should.equal(1);
-    result.MyCircle[0].should.include.all.keys('DeepNest');
-    result.MyCircle[0].DeepNest.length.should.equal(1);
-    result.MyCircle[0].DeepNest[0].NotSoDeepNest.length.should.equal(2);
-    result.MyCircle[0].DeepNest[0].NotSoDeepNest[0].should.deep.equal(['MyScalar']);
+    expect(result.MyCircle.length).toEqual(1);
+    expect(result.MyCircle[0]).toHaveProperty('DeepNest');
+    expect(result.MyCircle[0].DeepNest.length).toEqual(1);
+    expect(result.MyCircle[0].DeepNest[0].NotSoDeepNest.length).toEqual(2);
+    expect(result.MyCircle[0].DeepNest[0].NotSoDeepNest[0]).toEqual(['MyScalar']);
   });
 
   it('should handle very similar objects[test covering skipList naming bug]', () => {
@@ -98,9 +97,9 @@ describe('Build query tree from field', () => {
       typeDictionary,
       ignoreList
     );
-    result.MyBug.length.should.equal(2);
-    should.not.equal(result.MyBug[0], null);
-    should.not.equal(result.MyBug[1], null);
+    expect(result.MyBug.length).toEqual(2);
+    expect(result.MyBug[0]).not.toBeNull();
+    expect(result.MyBug[1]).not.toBeNull();
   });
 
   it('should not support default value for non nullable args[NOT IMPLEMENTED YET!]', () => {
@@ -121,7 +120,7 @@ describe('Build query tree from field', () => {
       typeDictionary
     );
 
-    should.equal(null, result);
+    expect(result).toBeNull();
   });
 
   it('should use example from description for non nullable args', () => {
@@ -142,8 +141,8 @@ describe('Build query tree from field', () => {
       },
       typeDictionary
     );
-    result['MyObjectField(ip: "192.168.0.1")'][0].should.deep.equal(['MyScalar']);
-    result['MyObjectField(ip: "192.168.0.1")'][1].should.deep.equal(['MyScalar2']);
+    expect(result['MyObjectField(ip: "192.168.0.1")'][0]).toEqual(['MyScalar']);
+    expect(result['MyObjectField(ip: "192.168.0.1")'][1]).toEqual(['MyScalar2']);
   });
 
   it('should ignore nullable args', () => {
@@ -163,8 +162,8 @@ describe('Build query tree from field', () => {
       },
       typeDictionary
     );
-    result.MyObjectField[0].should.deep.equal(['MyScalar']);
-    result.MyObjectField[1].should.deep.equal(['MyScalar2']);
+    expect(result.MyObjectField[0]).toEqual(['MyScalar']);
+    expect(result.MyObjectField[1]).toEqual(['MyScalar2']);
   });
 
   it('should ignore nullable args for SCALAR fields', () => {
@@ -184,7 +183,7 @@ describe('Build query tree from field', () => {
       },
       typeDictionary
     );
-    result.should.deep.equal(['MyScalar']);
+    expect(result).toEqual(['MyScalar']);
   });
 
   it('should use single example from description for non-nullable args for SCALAR fields', () => {
@@ -205,7 +204,7 @@ describe('Build query tree from field', () => {
       },
       typeDictionary
     );
-    result.should.deep.equal(['MyScalar(ip: "192.168.0.1")']);
+    expect(result).toEqual(['MyScalar(ip: "192.168.0.1")']);
   });
 
   it('should use multiple examples from description for non-nullable args for SCALAR fields', () => {
@@ -226,6 +225,6 @@ describe('Build query tree from field', () => {
       },
       typeDictionary
     );
-    result.should.deep.equal(['MyScalar(ip: "192.168.0.1")', 'MyScalar(ip: "192.168.0.2")']);
+    expect(result).toEqual(['MyScalar(ip: "192.168.0.1")', 'MyScalar(ip: "192.168.0.2")']);
   });
 });

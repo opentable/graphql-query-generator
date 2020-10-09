@@ -10,7 +10,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/*.ts --recursive",
+    "test": "jest",
     "dev": "nodemon",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/opentable/graphql-query-generator#readme",
   "devDependencies": {
+    "@types/jest": "^26.0.14",
     "@types/mocha": "^8.0.3",
     "@types/node": "^8.0.28",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
@@ -42,11 +43,13 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "express-graphql": "^0.6.6",
+    "jest": "^26.5.2",
     "jsdoctest": "^1.7.0",
     "mocha": "^8.1.3",
     "prettier": "2.0.5",
     "short-uuid": "^4.1.0",
     "swapi-graphql": "0.0.6",
+    "ts-jest": "^26.4.1",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3",
     "uglifyjs": "2.4.10"

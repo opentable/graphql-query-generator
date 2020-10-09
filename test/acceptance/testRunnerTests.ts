@@ -15,7 +15,7 @@ describe('Test Runner', () => {
   it('Report should not have errors', () => {
     return queryPromise.then((reportData) => {
       // console.log(reportData);
-      reportData[0].errors.length.should.equal(0);
+      reportData[0].errors.length).toBe(0);
     });
   });
 });
