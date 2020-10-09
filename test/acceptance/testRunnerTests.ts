@@ -1,10 +1,10 @@
-import should from 'chai';
+import 'mocha';
 import app from './exampleServer';
 import { runGraphQLTests } from '../../src/cli/testRunner';
 
 describe('Test Runner', () => {
   const serverUrl = 'http://localhost:12345/graphql';
-  let queryPromise = null;
+  let queryPromise: Promise<any>;
 
   before(() =>
     app.then(() => {

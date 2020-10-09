@@ -1,10 +1,11 @@
-import should from 'chai';
+import chai from 'chai';
+chai.should();
 import app from './exampleServer';
 import QueryGenerator from '../../src/queryGenerator';
 
 describe('Query generation', () => {
   const serverUrl = 'http://localhost:12345/graphql';
-  let queryPromise = null;
+  let queryPromise: Promise<any>;
 
   before(() =>
     app.then(() => {

@@ -1,6 +1,4 @@
 import { runGraphQLTests } from './testRunner';
-import chalk from 'chalk';
-import { retry } from './retryHelper';
 import { Command } from 'commander';
 import { terminal as term } from 'terminal-kit';
 
@@ -16,7 +14,7 @@ async function main() {
   program
     .version(require('../../package.json').version)
     .arguments('<serverUrl>')
-    .action((url) => {
+    .action(url => {
       serverUrl = url;
     })
     .option('-v, --verbose', 'Displays all the query information')
@@ -52,7 +50,7 @@ async function main() {
 
   term.bold('\n\nAPIs\n\n');
   term.table(
-    reportData.map((report) => [
+    reportData.map(report => [
       report.status === 'passed' && report.run.meetsSLA ? '^G√ ' : '',
       `^${report.status === 'passed' && report.run.meetsSLA ? '-' : 'R'}${report.query.signature} ${
         report.status === 'passed' && report.run.meetsSLA
@@ -72,8 +70,8 @@ async function main() {
     }
   );
 
-  const failedTests = reportData.filter((report) => report.status === 'failed' || !report.run.meetsSLA).length;
-  const passedTests = reportData.filter((report) => report.status === 'passed' && report.run.meetsSLA).length;
+  const failedTests = reportData.filter(report => report.status === 'failed' || !report.run.meetsSLA).length;
+  const passedTests = reportData.filter(report => report.status === 'passed' && report.run.meetsSLA).length;
 
   term.green(`\n${passedTests} passing\n`);
   term.red(`${failedTests} failing\n\n`);

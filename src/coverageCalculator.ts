@@ -1,6 +1,5 @@
-import schemaToQueryTree from './schemaToQueryTree';
 import * as _ from 'lodash';
-const { getQueryFields, getQueryFieldsModes } = schemaToQueryTree;
+import { getQueryFields, getQueryFieldsModes } from './schemaToQueryTree';
 
 /**
  * @example

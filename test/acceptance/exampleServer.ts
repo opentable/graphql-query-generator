@@ -1,7 +1,7 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { buildSchema } from 'graphql';
-import short from 'short-uuid';
+import { generate } from 'short-uuid';
 
 const schema = buildSchema(`
 
@@ -78,18 +78,26 @@ const schema = buildSchema(`
 `);
 
 class IgnoredSubtype {
+  aValue;
   constructor() {
     this.aValue = 42;
   }
 }
 
 class RandomnessStatistics {
+  explanation;
   constructor() {
     this.explanation = 'Because we can';
   }
 }
 
 class RandomDie {
+  numSides;
+  rollOnce;
+  rollXTimes;
+  statistics;
+  ignoredWithExamples;
+  ignoredNoParameters;
   constructor() {
     this.numSides = 4; // chosen by fair dice roll
     this.rollOnce = 1; // guaranteed to be random
@@ -101,8 +109,11 @@ class RandomDie {
 }
 
 class Game {
+  id;
+  players;
+  state;
   constructor(players) {
-    this.id = short.generate();
+    this.id = generate();
     this.players = players;
     this.state = 'PENDING';
   }
@@ -136,6 +147,6 @@ app.use(
   })
 );
 
-module.exports = new Promise((resolve, reject) => {
+export default new Promise((resolve, reject) => {
   app.listen(12345, resolve);
 });

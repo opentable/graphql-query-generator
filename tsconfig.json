@@ -7,10 +7,10 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "target": "es6", // specify ECMAScript target version
-    "types": ["node"],
+    "types": ["node", "chai", "mocha"],
     "typeRoots": ["node_modules/@types"],
     "allowJs": true, // allow a partial TypeScript and JavaScript codebase
     "esModuleInterop": true // Allow importing ess lib
   },
-  "include": ["./src/"]
+  "include": ["./src/", "./test/"]
 }

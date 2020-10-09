@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import * as graphql from 'graphql';
 import descriptionParser from './descriptionParser';
 
 const { getExamplesFrom, shouldFollow } = descriptionParser;
@@ -126,99 +125,87 @@ const getQueryFieldsModes = {
   ALL_FIELDS: 'ALL_FIELDS',
 };
 
-export default {
-  getQueryFieldsModes: getQueryFieldsModes,
-  getQueryFields: function getQueryFields(
-    mode,
-    field,
-    typeDictionary,
-    visitedFields,
-    isRoot = true,
-    parentFieldTypeDefinition = null
-  ) {
-    let queryFields: Array<string> = [];
-    const fieldTypeName = magiclyExtractFieldTypeName(field);
-    const fieldTypeDefinition = typeDictionary[fieldTypeName];
-    if (isRoot) {
-      queryFields.push(`${fieldTypeName}___${field.name}`);
-      if (mode === getQueryFieldsModes.QUERYABLE_FIELDS) {
-        const queriesBecauseRootAndWeDontKnowIfWeShouldStart = getFieldNameOrExamplesIfNecessary(field);
-        if (queriesBecauseRootAndWeDontKnowIfWeShouldStart.length === 0) {
-          return [];
-        }
+function buildQueryTreeFromField(field, typeDictionary, skipped: Array<string> = [], parentFieldTypeDefinition = null) {
+  const fieldTypeName = magiclyExtractFieldTypeName(field);
+  const fieldTypeDefinition = typeDictionary[fieldTypeName];
+
+  // this are base invocations for all subsequent queries
+  const queriesForRootField = getFieldNameOrExamplesIfNecessary(field);
+  if (fieldTypeDefinition.fields === null) {
+    // isLeafType
+    if (queriesForRootField.length === 0) {
+      return null;
+    }
+
+    return queriesForRootField;
+  }
+
+  if (fieldTypeDefinition.kind === 'OBJECT') {
+    skipped.push(getSkipKey(fieldTypeDefinition, field, parentFieldTypeDefinition));
+  }
+
+  let queryNode: any | null = null;
+  const allFields = getFields(field, typeDictionary);
+
+  _.forIn(allFields, (childField) => {
+    const childFieldTypeName = magiclyExtractFieldTypeName(childField);
+    const childFieldType = typeDictionary[childFieldTypeName];
+
+    if (skipped.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) === -1) {
+      queriesForRootField.forEach((rootFieldQuery) => {
+        queryNode = queryNode || {};
+        queryNode[rootFieldQuery] = queryNode[rootFieldQuery] || [];
+        queryNode[rootFieldQuery].push(
+          buildQueryTreeFromField(childField, typeDictionary, skipped, fieldTypeDefinition)
+        );
+      });
+    }
+  });
+
+  return queryNode;
+}
+
+function getQueryFields(mode, field, typeDictionary, visitedFields, isRoot = true, parentFieldTypeDefinition = null) {
+  let queryFields: Array<string> = [];
+  const fieldTypeName = magiclyExtractFieldTypeName(field);
+  const fieldTypeDefinition = typeDictionary[fieldTypeName];
+  if (isRoot) {
+    queryFields.push(`${fieldTypeName}___${field.name}`);
+    if (mode === getQueryFieldsModes.QUERYABLE_FIELDS) {
+      const queriesBecauseRootAndWeDontKnowIfWeShouldStart = getFieldNameOrExamplesIfNecessary(field);
+      if (queriesBecauseRootAndWeDontKnowIfWeShouldStart.length === 0) {
+        return [];
       }
     }
+  }
 
-    if (fieldTypeDefinition.fields === null) {
-      // isLeafType
-      // Current field has already been added one step up recursion chain
-      // so we do not need to add it again
-      return queryFields;
-    }
-
-    if (fieldTypeDefinition.kind === 'OBJECT') {
-      visitedFields.push(getSkipKey(fieldTypeDefinition, field, parentFieldTypeDefinition));
-    }
-
-    const allFields = getFields(field, typeDictionary);
-    _.forIn(allFields, (childField) => {
-      const childFieldTypeName = magiclyExtractFieldTypeName(childField);
-      const childFieldType = typeDictionary[childFieldTypeName];
-      const noOfPossibleQueries = getFieldNameOrExamplesIfNecessary(childField).length;
-      const wasChildFieldAlreadyVisited =
-        visitedFields.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) >= 0;
-
-      if ((noOfPossibleQueries > 0 || mode === getQueryFieldsModes.ALL_FIELDS) && !wasChildFieldAlreadyVisited) {
-        queryFields.push(`${fieldTypeName}___${childFieldTypeName}___${childField.name}`);
-        const subWalk = getQueryFields(mode, childField, typeDictionary, visitedFields, false, fieldTypeDefinition);
-        queryFields = queryFields.concat(subWalk);
-      }
-    });
-
+  if (fieldTypeDefinition.fields === null) {
+    // isLeafType
+    // Current field has already been added one step up recursion chain
+    // so we do not need to add it again
     return queryFields;
-  },
-  buildQueryTreeFromField: function buildQueryTreeFromField(
-    field,
-    typeDictionary,
-    skipped: Array<string> = [],
-    parentFieldTypeDefinition = null
-  ) {
-    const fieldTypeName = magiclyExtractFieldTypeName(field);
-    const fieldTypeDefinition = typeDictionary[fieldTypeName];
+  }
 
-    // this are base invocations for all subsequent queries
-    const queriesForRootField = getFieldNameOrExamplesIfNecessary(field);
-    if (fieldTypeDefinition.fields === null) {
-      // isLeafType
-      if (queriesForRootField.length === 0) {
-        return null;
-      }
+  if (fieldTypeDefinition.kind === 'OBJECT') {
+    visitedFields.push(getSkipKey(fieldTypeDefinition, field, parentFieldTypeDefinition));
+  }
 
-      return queriesForRootField;
+  const allFields = getFields(field, typeDictionary);
+  _.forIn(allFields, (childField) => {
+    const childFieldTypeName = magiclyExtractFieldTypeName(childField);
+    const childFieldType = typeDictionary[childFieldTypeName];
+    const noOfPossibleQueries = getFieldNameOrExamplesIfNecessary(childField).length;
+    const wasChildFieldAlreadyVisited =
+      visitedFields.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) >= 0;
+
+    if ((noOfPossibleQueries > 0 || mode === getQueryFieldsModes.ALL_FIELDS) && !wasChildFieldAlreadyVisited) {
+      queryFields.push(`${fieldTypeName}___${childFieldTypeName}___${childField.name}`);
+      const subWalk = getQueryFields(mode, childField, typeDictionary, visitedFields, false, fieldTypeDefinition);
+      queryFields = queryFields.concat(subWalk);
     }
+  });
 
-    if (fieldTypeDefinition.kind === 'OBJECT') {
-      skipped.push(getSkipKey(fieldTypeDefinition, field, parentFieldTypeDefinition));
-    }
+  return queryFields;
+}
 
-    let queryNode: any | null = null;
-    const allFields = getFields(field, typeDictionary);
-
-    _.forIn(allFields, (childField) => {
-      const childFieldTypeName = magiclyExtractFieldTypeName(childField);
-      const childFieldType = typeDictionary[childFieldTypeName];
-
-      if (skipped.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) === -1) {
-        queriesForRootField.forEach((rootFieldQuery) => {
-          queryNode = queryNode || {};
-          queryNode[rootFieldQuery] = queryNode[rootFieldQuery] || [];
-          queryNode[rootFieldQuery].push(
-            buildQueryTreeFromField(childField, typeDictionary, skipped, fieldTypeDefinition)
-          );
-        });
-      }
-    });
-
-    return queryNode;
-  },
-};
+export { getQueryFields, getQueryFieldsModes, buildQueryTreeFromField };

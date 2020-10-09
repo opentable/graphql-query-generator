@@ -3,7 +3,7 @@ import { queryClient } from '../graphqlClient';
 import QueryGenerator from '../queryGenerator';
 import GraphQLQuery from '../queryClass';
 
-export async function runGraphQLTests(url: string, progressCallback): Promise<Array<any>> {
+export async function runGraphQLTests(url: string, progressCallback?): Promise<Array<any>> {
   const queryGenerator = new QueryGenerator(url);
 
   let responseData = {};

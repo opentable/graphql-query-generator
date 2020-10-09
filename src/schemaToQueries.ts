@@ -1,5 +1,5 @@
 import queryTreeToGraphQLString from './aqtToQuery';
-import schemaToQueryTree from './schemaToQueryTree';
+import { buildQueryTreeFromField } from './schemaToQueryTree';
 import * as _ from 'lodash';
 
 export default function schemaToQueries(rootName, schema) {
@@ -32,7 +32,7 @@ export default function schemaToQueries(rootName, schema) {
      * }
      */
 
-    const queryTree = schemaToQueryTree.buildQueryTreeFromField(field, schema, sharedSkipList);
+    const queryTree = buildQueryTreeFromField(field, schema, sharedSkipList);
 
     if (queryTree !== null) {
       // Handle array OR objects
