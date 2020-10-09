@@ -1,6 +1,7 @@
-const should = require('chai').should();
-const { getQueryFields, getQueryFieldsModes } = require('../../../lib/schemaToQueryTree').default;
-import mockData = require('../mockData');
+import chai from 'chai';
+chai.should();
+import { getQueryFields, getQueryFieldsModes } from '../../../src/schemaToQueryTree';
+import mockData from '../mockData';
 
 describe('Build coverage', () => {
   let typeDictionary = null;
@@ -23,7 +24,7 @@ describe('Build coverage', () => {
       []
     );
     result.length.should.equal(9);
-    result.filter(r => r.indexOf('NOFollowPart') > 0).length.should.equal(1);
+    result.filter((r) => r.indexOf('NOFollowPart') > 0).length.should.equal(1);
   });
 
   it('should be able to fetch only queryable fields', () => {
@@ -40,7 +41,7 @@ describe('Build coverage', () => {
       []
     );
     result.length.should.equal(4);
-    result.filter(r => r.indexOf('NOFollowPart') > 0).length.should.equal(0);
+    result.filter((r) => r.indexOf('NOFollowPart') > 0).length.should.equal(0);
   });
 
   it('should not return querable fields if root object is not querable', () => {

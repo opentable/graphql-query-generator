@@ -7,10 +7,12 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "target": "es6", // specify ECMAScript target version
-    "types": ["node", "chai", "mocha"],
-    "typeRoots": ["node_modules/@types"],
-    "allowJs": true, // allow a partial TypeScript and JavaScript codebase
-    "esModuleInterop": true // Allow importing ess lib
+    "types": ["node", "mocha"],
+    // "typeRoots": ["node_modules/@types"],
+    "allowJs": false // do not allow a partial TypeScript and JavaScript codebase
+    // "esModuleInterop": true, // Allow importing ess lib
+    // "skipLibCheck": true
   },
-  "include": ["./src/", "./test/"]
+  "include": ["src/", "test/"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
