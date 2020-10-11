@@ -42,7 +42,7 @@ describe('Build coverage', () => {
     expect(result.filter((r) => r.indexOf('NOFollowPart') > 0).length).toBe(0);
   });
 
-  it('should not return querable fields if root object is not querable', () => {
+  it('should not return queryable fields if root object is not queryable', () => {
     const result = getQueryFields(
       getQueryFieldsModes.QUERYABLE_FIELDS,
       {

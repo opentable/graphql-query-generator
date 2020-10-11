@@ -10,7 +10,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest",
+    "test": "npm run jsdoctest && jest",
     "dev": "nodemon",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
@@ -29,11 +29,9 @@
   "homepage": "https://github.com/opentable/graphql-query-generator#readme",
   "devDependencies": {
     "@types/jest": "^26.0.14",
-    "@types/mocha": "^8.0.3",
     "@types/node": "^8.0.28",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
-    "chai": "^3.5.0",
     "eslint": "^7.10.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.0",
@@ -43,6 +41,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "express-graphql": "^0.6.6",
+    "graphql-tools": "^6.2.4",
     "jest": "^26.5.2",
     "jsdoctest": "^1.7.0",
     "mocha": "^8.1.3",
