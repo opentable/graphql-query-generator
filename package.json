@@ -14,7 +14,7 @@
     "dev": "nodemon",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
-    "jsdoctest": "npm run build-ts && mocha -r jsdoctest lib/"
+    "jsdoctest": "npm run build-ts && mocha -r jsdoctest lib/ --recursive"
   },
   "repository": {
     "type": "git",
