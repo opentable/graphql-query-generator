@@ -1,6 +1,8 @@
 import { runGraphQLTests } from './testRunner';
 import { Command } from 'commander';
 import { terminal as term } from 'terminal-kit';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../../package.json');
 
 const program = new Command();
 
@@ -12,7 +14,7 @@ let serverUrl = '';
 
 async function main() {
   program
-    .version(require('../../package.json').version)
+    .version(version)
     .arguments('<serverUrl>')
     .action((url) => {
       serverUrl = url;
@@ -78,17 +80,3 @@ async function main() {
 }
 
 main();
-
-function formatCoverageData(coverage) {
-  const coveragePercentage = (coverage.coverageRatio * 100).toFixed(2);
-  return `
-=======================================
-Overall coverage: ${coveragePercentage}%
----------------------------------------
-Fields not covered by queries:
-
-${coverage.notCoveredFields.join('\n')}
----------------------------------------
-Overall coverage: ${coveragePercentage}%
-`;
-}

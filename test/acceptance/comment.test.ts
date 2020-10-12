@@ -19,7 +19,7 @@ beforeAll(async (done) => {
   mutations = report.queries.filter((query) => query.type === 'MUTATION').map((q) => q.query);
   coverage = report.coverage;
 
-  reports = await runGraphQLTests(serverUrl);
+  // reports = await runGraphQLTests(serverUrl);
   done();
 });
 
