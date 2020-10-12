@@ -10,9 +10,8 @@ let progressBar;
 
 process.title = 'gql-query-generator';
 
-let serverUrl = '';
-
 async function main() {
+  let serverUrl = ' http://localhost:3000/graphql';
   program
     .version(version)
     .arguments('<serverUrl>')

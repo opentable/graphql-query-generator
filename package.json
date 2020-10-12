@@ -4,7 +4,7 @@
   "description": "Generates queries from the GraphQL endpoint via schema introspection.",
   "main": "index.js",
   "bin": {
-    "gql-test": "./bin/cli.js"
+    "graphql-service-tester": "./bin/cli.js"
   },
   "directories": {
     "test": "tests"
