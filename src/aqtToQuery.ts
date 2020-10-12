@@ -1,14 +1,5 @@
 import * as _ from 'lodash';
 
-/**
- * @example
- *   exports.default('name') // => 'name'
- *   exports.default(['name', 'surname', 'age']) // => 'name surname age '
- *   exports.default(['name', 'name', 'name']) // => 'name name name '
- *   exports.default({ people: 'name', countries: ['flag']}) // => 'people { name }countries { flag  }'
- *   exports.default(['id', 'name', { coordinates: ['lat', 'long'] }, { test: ['a']}])
- *   // => 'id name coordinates { lat long  } test { a  } '
- */
 export default function queryTreeToGraphQLString(tree, parentIndex = 0) {
   let output = '';
 

@@ -1,13 +1,6 @@
 import * as _ from 'lodash';
 import { getQueryFields, getQueryFieldsModes } from './schemaToQueryTree';
 
-/**
- * @example
- *   exports.default('ObjectContainingTwoDeeplyNestedObjects', require('../test/unit/mockData'))
- *   // => { coverageRatio: 1, notCoveredFields: []}
- *   exports.default('DeeplyNestedObjectWithPartialNoFollow', require('../test/unit/mockData'))
- *   // => { coverageRatio: 0.5, notCoveredFields: ["DeeplyNestedObject___NOFollowPart", "DeeplyNestedObject___DeeplyNestedObject___DeepNest", "DeeplyNestedObject___ObjectField___NotSoDeepNest"]}
- */
 export default function coverageCalculator(rootName, schema) {
   const sharedSkipListForGetQueryableFields = [];
   const sharedSkipListForGetAllFields = [];

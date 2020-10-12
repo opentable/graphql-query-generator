@@ -1,5 +1,5 @@
 import { buildQueryTreeFromField } from '../../../src/schemaToQueryTree';
-import mockData from '../mockData';
+import mockData from '../../mockData';
 
 describe('Build query tree from field', () => {
   let typeDictionary;

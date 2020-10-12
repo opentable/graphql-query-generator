@@ -1,5 +1,5 @@
 import express from 'express';
-import graphqlHTTP from 'express-graphql';
+import { graphqlHTTP } from 'express-graphql';
 import { buildSchema } from 'graphql';
 import { generate } from 'short-uuid';
 
@@ -131,18 +131,19 @@ app.use(
       rollDice: () => {
         return new RandomDie();
       },
+      mutations: {
+        createGame: (players) => {
+          return (game = new Game(players));
+        },
+        startGame: () => {
+          return (game.state = 'IN_PROGRESS');
+        },
+        endGame: () => {
+          return (game.state = 'COMPLETED');
+        },
+      },
     },
-    mutations: {
-      createGame: (players) => {
-        return (game = new Game(players));
-      },
-      startGame: () => {
-        return (game.state = 'IN_PROGRESS');
-      },
-      endGame: () => {
-        return (game.state = 'COMPLETED');
-      },
-    },
+
     graphiql: true,
   })
 );

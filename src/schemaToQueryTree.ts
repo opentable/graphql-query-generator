@@ -1,20 +1,7 @@
 import * as _ from 'lodash';
-import descriptionParser from './descriptionParser';
+import { getExamplesFrom, shouldFollow } from './descriptionParser';
 
-const { getExamplesFrom, shouldFollow } = descriptionParser;
-
-/**
- * @example
- *   isNotNullable({ type: { kind: 'NON_NULL' } }) // => true
- *   isNotNullable({
- *     type: {
- *       kind: 'LIST',
- *       ofType: { kind: 'NON_NULL' }
- *     }
- *   }) // => true
- *   isNotNullable({ type: { kind: 'OBJECT' } }) // => false
- */
-function isNotNullable(arg) {
+export function isNotNullable(arg) {
   const argType = arg.type.kind;
 
   if (argType === 'NON_NULL') {
@@ -29,41 +16,14 @@ function isNotNullable(arg) {
   return false;
 }
 
-/**
- * @example
- *   getFields({
- *       type: { name: 'SomeTypeName' }
- *     }, {
- *       SomeTypeName: {
- *         fields: [{ name: 'f1' }, { name: 'f2' }]
- *       }
- *     }
- *   )
- *   // => [{ name: 'f1' }, { name: 'f2' }]
- */
-function getFields(field, typeDictionary) {
+export function getFields(field, typeDictionary) {
   const typeName = magiclyExtractFieldTypeName(field);
   const allFields = typeDictionary[typeName].fields;
   // return _.filter(allFields, childField => !_.some(childField.args, isNotNullable));
   return allFields;
 }
 
-/**
- * @example
- *   getFieldNameOrExamplesIfNecessary({name: 'Name', args: []}) // => ['Name']
- *   getFieldNameOrExamplesIfNecessary({
- *    name: 'People',
- *    args: [{type:{kind: 'NON_NULL'}}],
- *    description: 'Examples: People(test: 1)'
- *   })
- *   // => ['People(test: 1)']
- *   getFieldNameOrExamplesIfNecessary({
- *    name: 'People',
- *    args: [{type:{kind: 'NULL'}}]
- *   })
- *   // => ['People']
- */
-function getFieldNameOrExamplesIfNecessary(field) {
+export function getFieldNameOrExamplesIfNecessary(field) {
   if (!shouldFollow(field.description)) {
     return [];
   }
@@ -85,21 +45,7 @@ function getFieldNameOrExamplesIfNecessary(field) {
   return queries;
 }
 
-/**
- * @example
- *   magiclyExtractFieldTypeName({ type: { name: 'Person' } }) // => 'Person'
- *   magiclyExtractFieldTypeName({
- *     type: {
- *       name: 'NotMe',
- *       ofType: {
- *         name: 'MeNeither',
- *         ofType: { name: 'TestType' }
- *       }
- *     }
- *   })
- *   // => 'TestType'
- */
-function magiclyExtractFieldTypeName(field) {
+export function magiclyExtractFieldTypeName(field) {
   let typeName = field.type.name;
   let ofType = field.type.ofType;
   while (ofType) {
@@ -110,22 +56,22 @@ function magiclyExtractFieldTypeName(field) {
   return typeName;
 }
 
-/**
- * @example
- *   getSkipKey({ name: 'TypeName' }, { name: 'FieldName' }, { name: 'ParentTypeName' }) // => 'FieldName-TypeName-ParentTypeName'
- *   getSkipKey({ name: 'TypeName' }, { name: 'FieldName' }, null) // => 'FieldName-TypeName-ROOT'
- */
-function getSkipKey(fieldTypeDefinition, field, parentFieldTypeDefinition) {
+export function getSkipKey(fieldTypeDefinition, field, parentFieldTypeDefinition) {
   const parentFieldTypeName = parentFieldTypeDefinition ? parentFieldTypeDefinition.name : 'ROOT';
   return `${field.name}-${fieldTypeDefinition.name}-${parentFieldTypeName}`;
 }
 
-const getQueryFieldsModes = {
+export const getQueryFieldsModes = {
   QUERYABLE_FIELDS: 'QUERYABLE_FIELDS',
   ALL_FIELDS: 'ALL_FIELDS',
 };
 
-function buildQueryTreeFromField(field, typeDictionary, skipped: Array<string> = [], parentFieldTypeDefinition = null) {
+export function buildQueryTreeFromField(
+  field,
+  typeDictionary,
+  skipped: Array<string> = [],
+  parentFieldTypeDefinition = null
+) {
   const fieldTypeName = magiclyExtractFieldTypeName(field);
   const fieldTypeDefinition = typeDictionary[fieldTypeName];
 
@@ -165,7 +111,14 @@ function buildQueryTreeFromField(field, typeDictionary, skipped: Array<string> =
   return queryNode;
 }
 
-function getQueryFields(mode, field, typeDictionary, visitedFields, isRoot = true, parentFieldTypeDefinition = null) {
+export function getQueryFields(
+  mode,
+  field,
+  typeDictionary,
+  visitedFields,
+  isRoot = true,
+  parentFieldTypeDefinition = null
+) {
   let queryFields: Array<string> = [];
   const fieldTypeName = magiclyExtractFieldTypeName(field);
   const fieldTypeDefinition = typeDictionary[fieldTypeName];
@@ -207,5 +160,3 @@ function getQueryFields(mode, field, typeDictionary, visitedFields, isRoot = tru
 
   return queryFields;
 }
-
-export { getQueryFields, getQueryFieldsModes, buildQueryTreeFromField };
