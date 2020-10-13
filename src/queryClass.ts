@@ -25,9 +25,7 @@ export default class GraphQLQuery {
     let alias, name;
     this.type = type;
 
-    const regex = new RegExp(
-      /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directive>@[\w]*\([^)]*\))*/g
-    );
+    const regex = /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directive>@[\w]*\([^)]*\))*/g;
     let matches;
     if ((matches = regex.exec(query)) !== null) {
       const { groups } = matches;
@@ -37,7 +35,7 @@ export default class GraphQLQuery {
       this.args = groups.args;
       this.query = query.replace(this.directive, '');
 
-      const paramRegex = new RegExp(/{{(?<parameter>[^"]*)}}/g);
+      const paramRegex = /{{(?<parameter>[^"]*)}}/g;
 
       let paramMatches;
       while ((paramMatches = paramRegex.exec(this.args)) && paramMatches.length > 1) {
@@ -46,7 +44,7 @@ export default class GraphQLQuery {
       }
     } else {
       let matches;
-      if ((matches = new RegExp(/{\s*(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*}/g).exec(query)) !== null) {
+      if ((matches = /{\s*(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*}/g.exec(query)) !== null) {
         alias = matches.groups['alias'];
         name = matches.groups['name'];
       }
@@ -67,18 +65,18 @@ export default class GraphQLQuery {
   }
 
   get tags(): string[] {
-    const tag = getRegexMatchGroup(new RegExp(/(name:['"](?<tag>[\w]*)['"])/g), this.directive, 'tag');
+    const tag = getRegexMatchGroup(/(name\s*:\s*['"](?<tag>[\w]*)['"])/g, this.directive, 'tag');
     return tag ? [tag] : [];
   }
 
   get isLast(): boolean {
-    const last = getRegexMatchGroup(new RegExp(/(?<last>@last)/g), this.directive, 'last');
+    const last = getRegexMatchGroup(/(?<last>@last)/g, this.directive, 'last');
     return Boolean(last);
   }
 
   get sla(): { responseTime: number } | null {
     const responseTime = getRegexMatchGroup(
-      new RegExp(/(maxResponseTime:['"](?<responseTime>[\w]*)['"])/g),
+      /(maxResponseTime\s*:\s*['"]\s*(?<responseTime>.*)\s*['"])/g,
       this.directive,
       'responseTime'
     );
@@ -86,8 +84,8 @@ export default class GraphQLQuery {
   }
 
   get ensureMinimum(): { items: number; arrays: string[] } | null {
-    const items = getRegexMatchGroup(new RegExp(/(nItems:\s*(?<items>[\w]*)\s*)/g), this.directive, 'items') || '1';
-    const stringArrays = getRegexMatchGroup(new RegExp(/(inArrays:\s*(?<arrays>[^)]*)\s*)/g), this.directive, 'arrays');
+    const items = getRegexMatchGroup(/(nItems\s*:\s*(?<items>[\w]*)\s*)/g, this.directive, 'items') || '1';
+    const stringArrays = getRegexMatchGroup(/(inArrays:\s*(?<arrays>[^)]*)\s*)/g, this.directive, 'arrays');
     if (!stringArrays) {
       return null;
     }

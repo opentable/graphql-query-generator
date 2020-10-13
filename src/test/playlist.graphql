@@ -3,12 +3,12 @@ type Query {
   tags: [Tag]
 
   # Examples:
-  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: 2)
-  # pl2: playlist(id: "{{fallPlaylist.id}}") @sla(maxResponseTime: 1000)
+  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: "1s")
+  # pl2: playlist(id: "{{fallPlaylist.id}}") @sla(maxResponseTime: "1ms")
   playlist(id: ID!): Playlist
 
   # Examples:
-  # searchPlaylists(term: "Mix")
+  # searchPlaylists(term: "Mix") @ensureMinimum(nItems:2, inArrays: ["tracks"])
   searchPlaylists(term: String!): [Playlist!]!
 
   # Examples:
@@ -19,7 +19,7 @@ type Query {
 
 type Mutation {
   # Examples:
-  # summerPlaylist: createPlaylist(name: "Summer Mix") @sla(maxResponseTime: 1)
+  # summerPlaylist: createPlaylist(name: "Summer Mix") @sla(maxResponseTime: ".5s")
   # fallPlaylist: createPlaylist(name: "Fall Mix")
   createPlaylist(name: String!): Playlist
 
@@ -36,6 +36,14 @@ type Mutation {
 type Playlist {
   id: ID!
   name: String!
+  tracks: [Track!]!
+}
+
+type Track {
+  id: ID!
+  title: String!
+  artist: String!
+  album: String!
 }
 
 type Tag {
