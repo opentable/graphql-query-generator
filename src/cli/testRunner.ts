@@ -3,8 +3,8 @@ import { queryClient } from '../graphqlClient';
 import QueryGenerator from '../queryGenerator';
 import GraphQLQuery from '../queryClass';
 
-export async function runGraphQLTests(url: string, progressCallback?): Promise<Array<any>> {
-  const queryGenerator = new QueryGenerator(url);
+export async function runGraphQLTests(server: string | IMockServer, progressCallback?): Promise<Array<any>> {
+  const queryGenerator = new QueryGenerator(server);
 
   let responseData = {};
 
@@ -66,7 +66,7 @@ export async function runGraphQLTests(url: string, progressCallback?): Promise<A
       item.pluggedInQuery = pluginParameters(item, responseData);
 
       report.run.start = new Date();
-      const res = await queryClient(url, item.pluggedInQuery, item.type);
+      const response = await queryClient(server, item.pluggedInQuery, item.type);
       report.run.end = new Date();
 
       report.run.ms = Math.abs(+report.run.start - +report.run.end);
@@ -75,8 +75,6 @@ export async function runGraphQLTests(url: string, progressCallback?): Promise<A
       // if (!report.run.isExpected) {
       //   throw new Error('response time exceeded SLA');
       // }
-
-      const response = await res.json();
 
       const hasErrors = response.errors;
 

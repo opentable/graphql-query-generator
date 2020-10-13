@@ -8,11 +8,11 @@
     "baseUrl": ".",
     "target": "es6", // specify ECMAScript target version
     "types": ["node", "jest"],
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["node_modules/@types", "src/@types"],
     "allowJs": false, // do not allow a partial TypeScript and JavaScript codebase
     "esModuleInterop": true, // Allow importing ess lib
     "skipLibCheck": true
   },
-  "include": ["src/"],
+  "include": ["src/", "test/"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

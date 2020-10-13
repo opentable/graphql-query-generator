@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import axios from 'axios';
 
 function createQuery(query: string, type: string) {
   if (type !== 'QUERY' && type !== 'MUTATION') {
@@ -6,7 +6,7 @@ function createQuery(query: string, type: string) {
   }
 
   const body = {
-    query: `${type === 'MUTATION' ? 'mutation ' : ''}${query}`,
+    query,
     variables: {},
     operationName: null,
   };
@@ -14,10 +14,24 @@ function createQuery(query: string, type: string) {
   return JSON.stringify(body);
 }
 
-export async function queryClient(url: string, query: string, type = 'QUERY'): Promise<any> {
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: createQuery(query, type),
-  });
+export async function queryClient(server: string | IMockServer, query: string, type = 'QUERY') {
+  const isString = typeof server === 'string' || server instanceof String;
+  const finalQuery = `${type === 'MUTATION' ? 'mutation ' : ''}${query}`;
+
+  if (isString) {
+    const response = await axios({
+      url: server as string,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createQuery(finalQuery, type),
+    });
+
+    if (response.status !== 200) {
+      return response.data;
+    }
+    return JSON.parse(response.data);
+  } else {
+    const response = await (server as IMockServer).query(finalQuery, {});
+    return response;
+  }
 }

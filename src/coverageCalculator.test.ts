@@ -1,5 +1,5 @@
 import coverageCalculator from './coverageCalculator';
-import mockData from '../test/mockData';
+import mockData from './mockData';
 describe('Coverage calculator', () => {
   it('Full coverage', () => {
     expect(coverageCalculator('ObjectContainingTwoDeeplyNestedObjects', mockData)).toEqual({

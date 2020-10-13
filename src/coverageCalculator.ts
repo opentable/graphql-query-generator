@@ -1,7 +1,17 @@
 import * as _ from 'lodash';
 import { getQueryFields, getQueryFieldsModes } from './schemaToQueryTree';
 
-export default function coverageCalculator(rootName, schema) {
+export default function coverageCalculator(
+  rootName: string,
+  schema
+): { coverageRatio: number; notCoveredFields: string[] } {
+  if (!rootName || !schema[rootName]) {
+    return {
+      coverageRatio: 1,
+      notCoveredFields: [],
+    };
+  }
+
   const sharedSkipListForGetQueryableFields = [];
   const sharedSkipListForGetAllFields = [];
 

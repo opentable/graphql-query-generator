@@ -1,5 +1,5 @@
-import { getQueryFields, getQueryFieldsModes } from '../../../src/schemaToQueryTree';
-import mockData from '../../mockData';
+import { getQueryFields, getQueryFieldsModes } from './schemaToQueryTree';
+import mockData from './mockData';
 
 describe('Build coverage', () => {
   let typeDictionary;

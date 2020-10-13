@@ -40,6 +40,9 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "express-graphql": "^0.11.0",
+    "graphql": "^15.3.0",
+    "graphql-tag": "^2.11.0",
+    "graphql-tools": "^6.2.4",
     "jest": "^26.5.2",
     "prettier": "2.1.2",
     "short-uuid": "^4.1.0",
@@ -50,13 +53,11 @@
     "uglifyjs": "2.4.11"
   },
   "dependencies": {
+    "axios": "^0.20.0",
     "chalk": "^4.1.0",
     "commander": "^6.1.0",
-    "fetch": "^1.1.0",
-    "graphql": "^15.3.0",
     "lodash": "^4.17.20",
     "ms": "^2.1.2",
-    "node-fetch": "^2.6.1",
     "p-iteration": "^1.1.8",
     "terminal-kit": "^1.43.0"
   },
