@@ -1,3 +1,4 @@
+import { IMockServer } from './interfaces';
 import introspectionQuery from './introspectionQuery';
 import { queryClient } from './graphqlClient';
 import schemaToQueries from './schemaToQueries';

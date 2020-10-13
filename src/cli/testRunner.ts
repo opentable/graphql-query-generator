@@ -2,6 +2,7 @@ import { forEachSeries } from 'p-iteration';
 import { queryClient } from '../graphqlClient';
 import QueryGenerator from '../queryGenerator';
 import GraphQLQuery from '../queryClass';
+import { IMockServer } from '../interfaces';
 
 export async function runGraphQLTests(server: string | IMockServer, progressCallback?): Promise<Array<any>> {
   const queryGenerator = new QueryGenerator(server);

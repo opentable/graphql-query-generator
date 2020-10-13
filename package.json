@@ -1,5 +1,5 @@
 {
-  "name": "graphql-query-generator",
+  "name": "graphql-service-tester",
   "version": "0.5.5",
   "description": "Generates queries from the GraphQL endpoint via schema introspection.",
   "main": "index.js",
@@ -12,6 +12,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon",
+    "playlist": "node ./bin/cli.js playlist",
     "build-ts": "tsc",
     "watch-ts": "tsc -w"
   },

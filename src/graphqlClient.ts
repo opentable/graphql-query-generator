@@ -1,3 +1,4 @@
+import { IMockServer } from './interfaces';
 import axios from 'axios';
 
 function createQuery(query: string, type: string) {

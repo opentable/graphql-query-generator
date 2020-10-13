@@ -20,9 +20,11 @@ async function main() {
       serverUrl = url;
     })
     .option('-v, --verbose', 'Displays all the query information')
-    .option('-p, --parallel', 'Executes all queries in parallel')
-    .option('-r, --retryCount <n>', 'Number of times to retry the query generator if it fails', parseInt)
-    .option('-t, --retrySnoozeTime <n>', 'Time in milliseconds to wait before retries', parseInt)
+    // TODO: Add support back for running in some in parallel while preserving dependency ordering
+    // .option('-p, --parallel', 'Executes all queries in parallel')
+    // TODO: Add back support for retries
+    // .option('-r, --retryCount <n>', 'Number of times to retry the query generator if it fails', parseInt)
+    // .option('-t, --retrySnoozeTime <n>', 'Time in milliseconds to wait before retries', parseInt)
     .parse(process.argv);
 
   let server;
@@ -31,6 +33,8 @@ async function main() {
     console.log('Using local mock playlist service for testing');
     server = mockPlaylistServer();
   }
+
+  console.log(program.verbose);
 
   const reportData = await runGraphQLTests(server || serverUrl, (name, percentComplete, totalQueries) => {
     if (!progressBar) {
@@ -56,12 +60,12 @@ async function main() {
     reportData.map((report) => [
       report.status === 'passed' && report.run.meetsSLA ? '^G√ ' : '',
       `^${report.status === 'passed' && report.run.meetsSLA ? '-' : 'R'}${report.query.signature} ${
-        report.status === 'passed' && report.run.meetsSLA
+        report.status === 'passed' && report.run.meetsSLA && !program.verbose
           ? ''
-          : `\n\n${report.errors.length ? report.errors[0] + '\n' : ''}${
+          : `${report.errors.length ? '\n\n' + report.errors[0] + '\n' : ''}${
               !report.run.meetsSLA ? `SLA response time ${report.query.sla.responseTime}ms exceeded` : ''
-            }\n\n${program.verbose ? report.query.pluggedInQuery + '\n\n' : ''}`
-      }`,
+            }${program.verbose ? '\n\n' + report.query.pluggedInQuery + '\n' : ''}`
+      }\n`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),
     {
