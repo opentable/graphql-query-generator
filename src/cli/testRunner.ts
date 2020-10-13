@@ -72,7 +72,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
 
       report.run.ms = Math.abs(+report.run.start - +report.run.end);
       const sla = report.query.sla;
-      console.log('sla', sla);
+
       report.run.meetsSLA = Boolean(report.run.ms <= (sla ? sla.responseTime : 15000));
       // if (!report.run.isExpected) {
       //   throw new Error('response time exceeded SLA');

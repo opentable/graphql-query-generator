@@ -17,5 +17,5 @@ export function mockPlaylistServer() {
     // },
   };
 
-  return mockServer(typeDefs, mocks, false);
+  return mockServer(typeDefs, mocks, true);
 }

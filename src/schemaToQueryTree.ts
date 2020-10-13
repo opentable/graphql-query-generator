@@ -97,7 +97,8 @@ export function buildQueryTreeFromField(
     const childFieldTypeName = magiclyExtractFieldTypeName(childField);
     const childFieldType = typeDictionary[childFieldTypeName];
 
-    if (skipped.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) === -1) {
+    // FIX: Skipped logic is causing a problem with the second query fields not all coming back.
+    if (true || skipped.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) === -1) {
       queriesForRootField.forEach((rootFieldQuery) => {
         queryNode = queryNode || {};
         queryNode[rootFieldQuery] = queryNode[rootFieldQuery] || [];

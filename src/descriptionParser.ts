@@ -15,7 +15,7 @@ export function getExamplesFrom(comment) {
   const test = new RegExp(
     /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directive>@[\w]*\([^)]*\))*/g
   );
-  // Forgive me
+
   while ((matches = test.exec(examplesDescription)) && matches.length > 1) {
     const { groups } = matches;
     if (groups.alias && !groups.name) {
