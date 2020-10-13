@@ -3,7 +3,7 @@ type Query {
   tags: [Tag]
 
   # Examples:
-  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: 1000)
+  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: 2)
   # pl2: playlist(id: "{{fallPlaylist.id}}") @sla(maxResponseTime: 1000)
   playlist(id: ID!): Playlist
 
@@ -19,7 +19,7 @@ type Query {
 
 type Mutation {
   # Examples:
-  # summerPlaylist: createPlaylist(name: "Summer Mix")
+  # summerPlaylist: createPlaylist(name: "Summer Mix") @sla(maxResponseTime: 1)
   # fallPlaylist: createPlaylist(name: "Fall Mix")
   createPlaylist(name: String!): Playlist
 
