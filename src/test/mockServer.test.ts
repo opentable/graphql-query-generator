@@ -1,22 +1,12 @@
-import fs from 'fs';
-import { mockServer } from 'graphql-tools';
-import { runGraphQLTests } from '../src/cli/testRunner';
+import { mockPlaylistServer } from './mockServer';
+import { runGraphQLTests } from '../cli/testRunner';
 
 let reports;
 let queries;
 let mutations;
 
 beforeAll(async (done) => {
-  const typeDefs = [fs.readFileSync(__dirname + '/playlist.graphql', 'utf8')];
-
-  const mocks = {
-    // Tag: () => ({
-    //   tag: 'Hello',
-    // }),
-    // ID: () => 'A',
-  };
-
-  const server = mockServer(typeDefs, mocks, false);
+  const server = mockPlaylistServer();
   reports = await runGraphQLTests(server);
   queries = reports.filter(({ query }) => query.type === 'QUERY').map((q) => q.query);
   mutations = reports.filter(({ query }) => query.type === 'MUTATION').map((q) => q.query);

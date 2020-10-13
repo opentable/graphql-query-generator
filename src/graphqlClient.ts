@@ -29,7 +29,7 @@ export async function queryClient(server: string | IMockServer, query: string, t
     if (response.status !== 200) {
       return response.data;
     }
-    return JSON.parse(response.data);
+    return response.data;
   } else {
     const response = await (server as IMockServer).query(finalQuery, {});
     return response;

@@ -11,8 +11,8 @@
     "typeRoots": ["node_modules/@types", "src/@types"],
     "allowJs": false, // do not allow a partial TypeScript and JavaScript codebase
     "esModuleInterop": true, // Allow importing ess lib
-    "skipLibCheck": true
+    "skipLibCheck": false
   },
-  "include": ["src/", "test/"],
+  "include": ["src/"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

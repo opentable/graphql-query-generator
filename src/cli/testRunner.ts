@@ -158,5 +158,4 @@ function logErrorToReport(report, error) {
   const errorMessage = error.message || error;
   report.errors.push(errorMessage);
   report.status = 'failed';
-  // console.log(error);
 }
