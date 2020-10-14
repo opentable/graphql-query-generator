@@ -23,7 +23,7 @@ To get a local copy up and running follow these simple example steps.
 1. Clone the repo
 
 ```sh
-git clone https://github.com/your_username_/Project-Name.git
+git clone https://github.com/chad-superhifi/graphql-service-tester.git
 ```
 
 2. Install NPM packages
@@ -228,6 +228,6 @@ Distributed under the ISC License. See `LICENSE` for more information.
 
 ## Contact
 
-Chad Bumstead - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Chad Bumstead - cbumstead@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/chad-superhifi/graphql-service-tester.git](https://github.com/chad-superhifi/graphql-service-tester.git)
