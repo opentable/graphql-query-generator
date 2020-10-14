@@ -1,13 +1,13 @@
 {
   "name": "graphql-service-tester",
-  "version": "0.5.5",
-  "description": "Generates queries from the GraphQL endpoint via schema introspection.",
-  "main": "index.js",
+  "version": "1.0.0",
+  "description": "Tests GraphQL service queries and mutations via schema introspection",
+  "main": "./bin/cli.js",
   "bin": {
     "graphql-service-tester": "./bin/cli.js"
   },
   "directories": {
-    "test": "tests"
+    "test": "src/test"
   },
   "scripts": {
     "test": "jest",
@@ -20,8 +20,21 @@
     "type": "git",
     "url": "git+https://github.com/opentable/graphql-query-generator.git"
   },
-  "keywords": [],
-  "author": "Piotr Bazydlo <piotr.bazydlo@gmail.com>",
+  "keywords": [
+    "graphql",
+    "service",
+    "API",
+    "endpoint",
+    "query",
+    "mutation",
+    "test",
+    "schema"
+  ],
+  "author": "Chad Bumstead <cbumstead@gmail.com>",
+  "contributors": [
+    "Piotr Bazydlo <piotr.bazydlo@gmail.com>",
+    "Dillon Cordova <dillontcordova@gmail.com>"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/opentable/graphql-query-generator/issues"

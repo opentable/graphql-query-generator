@@ -3,12 +3,12 @@ type Query {
   tags: [Tag]
 
   # Examples:
-  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: "1s")
+  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: "1ms")
   # pl2: playlist(id: "{{fallPlaylist.id}}") @sla(maxResponseTime: "3ms")
   playlist(id: ID!): Playlist
 
   # Examples:
-  # searchPlaylists(term: "Mix")
+  # searchPlaylists(term: "Mix") @ensureMinimum(nItems: 3, inArrays:["searchPlaylists", "searchPlaylists.tracks"])
   searchPlaylists(term: String!): [Playlist!]!
 
   # Examples:
