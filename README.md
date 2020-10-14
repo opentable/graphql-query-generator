@@ -228,6 +228,4 @@ Distributed under the ISC License. See `LICENSE` for more information.
 
 ## Contact
 
-Chad Bumstead - cbumstead@gmail.com
-
 Project Link: [https://github.com/chad-superhifi/graphql-service-tester.git](https://github.com/chad-superhifi/graphql-service-tester.git)
