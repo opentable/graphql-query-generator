@@ -35,7 +35,7 @@
     "Piotr Bazydlo <piotr.bazydlo@gmail.com>",
     "Dillon Cordova <dillontcordova@gmail.com>"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/chad-superhifi/graphql-service-tester/issues"
   },
