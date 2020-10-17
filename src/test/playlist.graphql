@@ -1,0 +1,52 @@
+type Query {
+  # This returns an array of Tags from the database
+  tags: [Tag]
+
+  # Examples:
+  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: "1ms")
+  # pl2: playlist(id: "{{fallPlaylist.id}}") @sla(maxResponseTime: "3ms")
+  playlist(id: ID!): Playlist
+
+  # Examples:
+  # searchPlaylists(term: "Mix") @ensureMinimum(nItems: 3, inArrays:["searchPlaylists", "searchPlaylists.tracks"])
+  searchPlaylists(term: String!): [Playlist!]!
+
+  # Examples:
+  # +NOFOLLOW
+  # ignoredQuery(name: "Ignore me")
+  ignoredQuery(name: String): String
+}
+
+type Mutation {
+  # Examples:
+  # summerPlaylist: createPlaylist(name: "Summer Mix") @sla(maxResponseTime: ".5s")
+  # fallPlaylist: createPlaylist(name: "Fall Mix")
+  createPlaylist(name: String!): Playlist
+
+  # Examples:
+  # summerHitsPlaylist: updatePlaylist(id: "{{summerPlaylist.id}}", name: "Summer Hits")
+  updatePlaylist(id: ID!, name: String!): Playlist
+
+  # Examples:
+  # rp1: removePlaylist(id: "{{summerHitsPlaylist.id}}") @last
+  # rp2: removePlaylist(id: "{{fallPlaylist.id}}") @last
+  removePlaylist(id: ID!): Playlist
+}
+
+type Playlist {
+  id: ID!
+  name: String!
+  tracks: [Track!]!
+}
+
+type Track {
+  id: ID!
+  title: String!
+  artist: String!
+  album: String!
+}
+
+type Tag {
+  id: Int!
+  tag: String!
+}
