@@ -143,6 +143,8 @@ type Mutation {
   createPlaylist(name: String!): Playlist
 }
 
+// fallPlaylist = Playlist (From the above Mutation)
+
 type Query {
   # Examples:
   # playlist(id: "{{fallPlaylist.id}}")
