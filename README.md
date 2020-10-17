@@ -1,6 +1,6 @@
 # GraphQL Service Tester
 
-GraphQL Service Tester (a fork of [graphql-query-generator](https://github.com/opentable/graphql-query-generator)) uses schema introspection to create integration tests automatically from the comments on the query and mutation! This can provide a lot of test coverage without having to write any lines of code. And give you some peace of mind when making changes to the service to help prevent regressions. This is a great tool to have run as part of your CI build.
+GraphQL Service Tester (a fork of [graphql-query-generator](https://github.com/opentable/graphql-query-generator)) uses schema introspection to create smoke tests automatically from the comments on the query and mutation! This can provide a lot of test coverage without having to write any lines of code. And give you some peace of mind when making changes to the service to help prevent regressions. This is a great tool to have run as part of your CI build.
 
 ## Example
 

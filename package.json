@@ -27,6 +27,7 @@
     "endpoint",
     "query",
     "mutation",
+    "smoke test",
     "test",
     "schema"
   ],
