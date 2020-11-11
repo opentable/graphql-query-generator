@@ -8,7 +8,7 @@ type Query {
   playlist(id: ID!): Playlist
 
   # Examples:
-  # searchPlaylists(term: "Mix") @ensureMinimum(nItems: 3, inArrays:["searchPlaylists", "searchPlaylists.tracks"])
+  # searchPlaylists(term: "Mix") @ensureMinimum(nItems: 2, inArrays:["searchPlaylists", "searchPlaylists.tracks"])
   searchPlaylists(term: String!): [Playlist!]!
 
   # Examples:
