@@ -59,6 +59,7 @@
     "graphql-tag": "^2.11.0",
     "graphql-tools": "^6.2.4",
     "jest": "^26.5.2",
+    "nodemon": "^2.0.6",
     "prettier": "2.1.2",
     "short-uuid": "^4.1.0",
     "swapi-graphql": "0.0.6",
