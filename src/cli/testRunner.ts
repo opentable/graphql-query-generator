@@ -96,7 +96,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
             parts.forEach((part) => {
               if (Array.isArray(reference)) {
                 const isValid = reference.length >= minimums.items;
-                console.log(currentField, isValid);
+                //  console.log(currentField, isValid);
                 if (!isValid) {
                   logErrorToReport(
                     report,
