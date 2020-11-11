@@ -80,6 +80,8 @@ async function main() {
 
   term.green(`\n${passedTests} passing\n`);
   term.red(`${failedTests} failing\n\n`);
+
+  process.exitCode = failedTests > 0 ? 1 : 0;
 }
 
 main();
