@@ -13,6 +13,7 @@
     "test": "jest",
     "dev": "nodemon",
     "playlist": "node ./bin/cli.js playlist",
+    "local": "node ./bin/cli.js http://localhost:3000/graphql",
     "build-ts": "tsc",
     "watch-ts": "tsc -w"
   },
