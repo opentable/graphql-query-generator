@@ -3,7 +3,7 @@ type Query {
   tags: [Tag]
 
   # Examples:
-  # pl1: playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: "1ms")
+  # pl1: playlist(id: "{{summerPlaylist.id}}") @wait(waitTime: "500ms")
   # pl2: playlist(id: "{{fallPlaylist.id}}") @sla(maxResponseTime: "3ms")
   playlist(id: ID!): Playlist
 

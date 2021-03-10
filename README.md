@@ -120,12 +120,12 @@ The `@wait` directive causes the tester to sleep for the amount of time before r
 ```graphql
 type Query {
   # Examples:
-  # playlist(id: "aihSOj7Qs0yzd6Kfc4x7Bg") @wait(time: "1s")
+  # playlist(id: "aihSOj7Qs0yzd6Kfc4x7Bg") @wait(waitTime: "1s")
   playlist(id: ID!): Playlist
 }
 ```
 
-The wait **_time_** must be a string and uses the [ms](https://github.com/vercel/ms#readme) library to parse the string with units into milliseconds.
+The wait **waitTime** must be a string and uses the [ms](https://github.com/vercel/ms#readme) library to parse the string with units into milliseconds.
 
 ```
 "600ms", "2s", "1.2s"

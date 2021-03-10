@@ -63,6 +63,11 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
     try {
       progressCallback && progressCallback(report.query.name, 0, orderedQueries.length);
 
+      if (report.query.wait) {
+        console.log('sleeping (ms)', report.query.wait.waitTime);
+        await sleep(report.query.wait.waitTime);
+      }
+
       // Look for parameter {{mytrack.audio.name}} and plug it in
       item.pluggedInQuery = pluginParameters(item, responseData);
 
@@ -160,4 +165,10 @@ function logErrorToReport(report, error) {
   const errorMessage = error.message || error;
   report.errors.push(errorMessage);
   report.status = 'failed';
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
