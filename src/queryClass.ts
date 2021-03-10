@@ -83,6 +83,11 @@ export default class GraphQLQuery {
     return responseTime ? { responseTime: ms(responseTime) } : null;
   }
 
+  get wait(): { waitTime: number } | null {
+    const waitTime = getRegexMatchGroup(/(waitTime\s*:\s*['"]\s*(?<waitTime>.*)\s*['"])/g, this.directive, 'waitTime');
+    return waitTime ? { waitTime: ms(waitTime) } : null;
+  }
+
   get ensureMinimum(): { items: number; arrays: string[] } | null {
     const items = getRegexMatchGroup(/(nItems\s*:\s*(?<items>[\w]*)\s*)/g, this.directive, 'items') || '1';
     const stringArrays = getRegexMatchGroup(/(inArrays:\s*(?<arrays>[^)]*)\s*)/g, this.directive, 'arrays');
