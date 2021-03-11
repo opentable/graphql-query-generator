@@ -69,7 +69,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       }
 
       // Look for parameter {{mytrack.audio.name}} and plug it in
-      item.pluggedInQuery = pluginParameters(item, responseData);
+      item.pluggedInQuery = pluginParameters(item, responseData, queries);
 
       report.run.start = new Date();
       const response = await queryClient(server, item.pluggedInQuery, item.type);
@@ -134,27 +134,36 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
   return reportData;
 }
 
-function pluginParameters(query, responseData) {
+function pluginParameters(query, responseData, queries) {
   let pluggedInQuery = query.query;
   query.parameters.forEach((param) => {
     // Eval using parameter against responseData to get value to plugin
     try {
       const parts = param.split('.');
+      const [alias] = parts;
       let currentField = '';
       let reference = responseData;
       parts.forEach((part) => {
         if (Array.isArray(reference)) {
           reference = reference[0];
           currentField += '[0]';
+        } else if (part === '$ARGS') {
+          console.log('found $ARGS');
+          // Get target query
+          const targetQuery = queries.find((q) => q.alias === alias);
+          const targetArgs = eval(targetQuery.args.replace('(', '({').replace(')', '})'));
+          reference = targetArgs;
+        } else {
+          reference = reference[part];
+          currentField += '.' + part;
         }
-        reference = reference[part];
-        currentField += '.' + part;
       });
 
       const value = reference;
       // Replace {{parameter}} with actual value
       pluggedInQuery = pluggedInQuery.replace(`{{${param}}}`, value);
-    } catch {
+    } catch (ex) {
+      console.log(ex);
       throw Error(`could not find {{${param}}}`);
     }
   });
