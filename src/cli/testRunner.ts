@@ -28,14 +28,14 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
   });
 
   // Walk dependency tree depth first to reorder
-  const walkDependents = (queries: GraphQLQuery[]): GraphQLQuery[] => {
-    if (!queries.length) {
+  const walkDependents = (queries: GraphQLQuery[], depth = 0): GraphQLQuery[] => {
+    if (!queries.length || depth > 100) {
       return [];
     }
     let visited: GraphQLQuery[] = [];
     queries.forEach((query) => {
       if (!query.isVisited) {
-        visited = visited.concat(walkDependents(query.dependents));
+        visited = visited.concat(walkDependents(query.dependents, depth + 1));
         query.isVisited = true;
         visited.push(query);
       }
@@ -69,7 +69,8 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       }
 
       // Look for parameter {{mytrack.audio.name}} and plug it in
-      item.pluggedInQuery = pluginParameters(item, responseData, queries);
+      item.pluggedInQuery = pluginParameters(item.query, item, responseData, queries);
+      item.pluggedInArgs = pluginParameters(item.args, item, responseData, queries);
 
       report.run.start = new Date();
       const response = await queryClient(server, item.pluggedInQuery, item.type);
@@ -86,6 +87,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       const hasErrors = response.errors;
 
       if (hasErrors) {
+        console.log(response.errors);
         response.errors.map((error) => logErrorToReport(report, 'API Error: ' + error.message));
       } else {
         // Store responses in memory so they can be used for an argument to another query/mutation call
@@ -134,8 +136,8 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
   return reportData;
 }
 
-function pluginParameters(query, responseData, queries) {
-  let pluggedInQuery = query.query;
+function pluginParameters(inputString, query, responseData, queries) {
+  let pluggedInQuery = inputString;
   query.parameters.forEach((param) => {
     // Eval using parameter against responseData to get value to plugin
     try {
@@ -148,10 +150,11 @@ function pluginParameters(query, responseData, queries) {
           reference = reference[0];
           currentField += '[0]';
         } else if (part === '$ARGS') {
-          console.log('found $ARGS');
           // Get target query
           const targetQuery = queries.find((q) => q.alias === alias);
-          const targetArgs = eval(targetQuery.args.replace('(', '({').replace(')', '})'));
+          const targetArgs = eval(
+            (targetQuery.pluggedInArgs || targetQuery.args).replace('(', '({').replace(')', '})')
+          );
           reference = targetArgs;
         } else {
           reference = reference[part];
