@@ -13,6 +13,7 @@
     "test": "jest",
     "dev": "nodemon",
     "playlist": "node ./bin/cli.js playlist",
+    "local": "node ./bin/cli.js http://localhost:3000/graphql",
     "build-ts": "tsc",
     "watch-ts": "tsc -w"
   },
@@ -69,7 +70,7 @@
     "uglifyjs": "2.4.11"
   },
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "commander": "^6.1.0",
     "lodash": "^4.17.20",
