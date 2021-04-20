@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { mockServer } from 'graphql-tools';
+import { MockList, mockServer } from 'graphql-tools';
 
 export function mockPlaylistServer() {
   // Load graphql schema file from src folder as TS doesn't copy it to lib
@@ -12,9 +12,46 @@ export function mockPlaylistServer() {
     //   tag: 'Hello',
     // }),
     // ID: () => 'A',
-    // Playlist: {
-    //   tracks: () => [{}, {}, {}],
-    // },
+    RootQuery: () => ({
+      searchPlaylists: () => new MockList([2, 4]),
+      // searchPlaylists: () => [
+      //   {
+      //     name: 'playlist',
+      //     tracks: [
+      //       [
+      //         {
+      //           title: 'test',
+      //         },
+      //         {
+      //           title: 'test',
+      //         },
+      //         {
+      //           title: 'test',
+      //         },
+      //       ],
+      //     ],
+      //   },
+      // ],
+    }),
+    // Playlist: () => ({
+    //   tracks: () => new MockList([2, 3]),
+    // }),
+    // Playlist: () => ({
+    //   tracks: () => [
+    //     {
+    //       title: 'test',
+    //     },
+    //     {
+    //       title: 'test',
+    //     },
+    //     {
+    //       title: 'test',
+    //     },
+    //   ],
+    // }),
+    // Track: () => ({
+    //   title: () => 'test',
+    // }),
   };
 
   return mockServer(typeDefs, mocks, true);
