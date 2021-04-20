@@ -57,12 +57,14 @@ async function main() {
   term.table(
     reportData.map((report) => [
       report.status === 'passed' && report.run.meetsSLA ? '^G√ ' : '',
-      `^${report.status === 'passed' && report.run.meetsSLA ? '-' : 'R'}${report.query.signature} ${
+      `^${report.status === 'passed' && report.run.meetsSLA ? '-' : 'R'}${
+        report.query.signature || report.query.query
+      } ${
         report.status === 'passed' && report.run.meetsSLA && !program.verbose
           ? ''
           : `${report.errors.length ? '\n\n' + report.errors[0] + '\n' : ''}${
               !report.run.meetsSLA ? `\n\nSLA response time ${report.query.sla.responseTime}ms exceeded\n` : ''
-            }${program.verbose ? '\n\n' + report.query.pluggedInQuery + '\n' : ''}`
+            }${program.verbose ? '\n\n' + report.query.signature + '\n' : ''}`
       }\n`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),

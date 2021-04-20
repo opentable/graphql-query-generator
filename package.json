@@ -1,6 +1,6 @@
 {
   "name": "graphql-service-tester",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Tests GraphQL service queries and mutations via schema introspection",
   "main": "./bin/cli.js",
   "bin": {
@@ -13,7 +13,8 @@
     "test": "jest",
     "dev": "nodemon",
     "playlist": "node ./bin/cli.js playlist",
-    "local": "node ./bin/cli.js http://localhost:3000/graphql",
+    "playlist:debug": "tsc; node ./bin/cli.js playlist",
+    "local": "tsc; node ./bin/cli.js http://localhost:3000/graphql",
     "build-ts": "tsc",
     "watch-ts": "tsc -w"
   },

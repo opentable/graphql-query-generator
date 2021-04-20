@@ -28,14 +28,14 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
   });
 
   // Walk dependency tree depth first to reorder
-  const walkDependents = (queries: GraphQLQuery[]): GraphQLQuery[] => {
-    if (!queries.length) {
+  const walkDependents = (queries: GraphQLQuery[], depth = 0): GraphQLQuery[] => {
+    if (!queries.length || depth > 100) {
       return [];
     }
     let visited: GraphQLQuery[] = [];
     queries.forEach((query) => {
       if (!query.isVisited) {
-        visited = visited.concat(walkDependents(query.dependents));
+        visited = visited.concat(walkDependents(query.dependents, depth + 1));
         query.isVisited = true;
         visited.push(query);
       }
@@ -63,8 +63,14 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
     try {
       progressCallback && progressCallback(report.query.name, 0, orderedQueries.length);
 
+      if (report.query.wait) {
+        console.log('sleeping (ms)', report.query.wait.waitTime);
+        await sleep(report.query.wait.waitTime);
+      }
+
       // Look for parameter {{mytrack.audio.name}} and plug it in
-      item.pluggedInQuery = pluginParameters(item, responseData);
+      item.pluggedInQuery = pluginParameters(item.query, item, responseData, queries);
+      item.pluggedInArgs = pluginParameters(item.args, item, responseData, queries);
 
       report.run.start = new Date();
       const response = await queryClient(server, item.pluggedInQuery, item.type);
@@ -78,6 +84,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       const hasErrors = response.errors;
 
       if (hasErrors) {
+        console.log(response.errors);
         response.errors.map((error) => logErrorToReport(report, 'API Error: ' + error.message));
       } else {
         // Store responses in memory so they can be used for an argument to another query/mutation call
@@ -130,27 +137,37 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
   return reportData;
 }
 
-function pluginParameters(query, responseData) {
-  let pluggedInQuery = query.query;
+function pluginParameters(inputString, query, responseData, queries) {
+  let pluggedInQuery = inputString;
   query.parameters.forEach((param) => {
     // Eval using parameter against responseData to get value to plugin
     try {
       const parts = param.split('.');
+      const [alias] = parts;
       let currentField = '';
       let reference = responseData;
       parts.forEach((part) => {
         if (Array.isArray(reference)) {
           reference = reference[0];
           currentField += '[0]';
+        } else if (part === '$ARGS') {
+          // Get target query
+          const targetQuery = queries.find((q) => q.alias === alias);
+          const targetArgs = eval(
+            (targetQuery.pluggedInArgs || targetQuery.args).replace('(', '({').replace(')', '})')
+          );
+          reference = targetArgs;
+        } else {
+          reference = reference[part];
+          currentField += '.' + part;
         }
-        reference = reference[part];
-        currentField += '.' + part;
       });
 
       const value = reference;
       // Replace {{parameter}} with actual value
       pluggedInQuery = pluggedInQuery.replace(`{{${param}}}`, value);
-    } catch {
+    } catch (ex) {
+      console.log(ex);
       throw Error(`could not find {{${param}}}`);
     }
   });
@@ -161,4 +178,10 @@ function logErrorToReport(report, error) {
   const errorMessage = error.message || error;
   report.errors.push(errorMessage);
   report.status = 'failed';
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }

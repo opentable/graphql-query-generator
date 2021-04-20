@@ -3,7 +3,9 @@ import ms from 'ms';
 export default class GraphQLQuery {
   readonly query: string;
 
-  pluggedInQuery: string;
+  public pluggedInQuery: string;
+
+  public pluggedInArgs: string;
 
   readonly type: string;
 
@@ -33,6 +35,7 @@ export default class GraphQLQuery {
       name = groups.name;
       this.directive = groups.directive;
       this.args = groups.args;
+      this.pluggedInArgs = this.args;
       this.query = query.replace(this.directive, '');
 
       const paramRegex = /{{(?<parameter>[^"]*)}}/g;
@@ -83,6 +86,11 @@ export default class GraphQLQuery {
     return responseTime ? { responseTime: ms(responseTime) } : null;
   }
 
+  get wait(): { waitTime: number } | null {
+    const waitTime = getRegexMatchGroup(/(waitTime\s*:\s*['"]\s*(?<waitTime>.*)\s*['"])/g, this.directive, 'waitTime');
+    return waitTime ? { waitTime: ms(waitTime) } : null;
+  }
+
   get ensureMinimum(): { items: number; arrays: string[] } | null {
     const items = getRegexMatchGroup(/(nItems\s*:\s*(?<items>[\w]*)\s*)/g, this.directive, 'items') || '1';
     const stringArrays = getRegexMatchGroup(/(inArrays:\s*(?<arrays>[^)]*)\s*)/g, this.directive, 'arrays');
@@ -99,7 +107,7 @@ export default class GraphQLQuery {
   }
 
   get signature(): string {
-    return `${this.name}${this.args || ''}`;
+    return `${this.name}${this.pluggedInArgs || this.args || ''}`;
   }
 
   public toString = (): string => `${this.query}`;
