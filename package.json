@@ -67,7 +67,7 @@
     "swapi-graphql": "0.0.6",
     "ts-jest": "^26.4.1",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.3",
+    "typescript": "^4.2.4",
     "uglifyjs": "2.4.11"
   },
   "dependencies": {

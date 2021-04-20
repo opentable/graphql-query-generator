@@ -80,9 +80,6 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       const sla = report.query.sla;
 
       report.run.meetsSLA = Boolean(report.run.ms <= (sla ? sla.responseTime : 120000));
-      // if (!report.run.isExpected) {
-      //   throw new Error('response time exceeded SLA');
-      // }
 
       const hasErrors = response.errors;
 
@@ -113,8 +110,12 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
                 reference = reference[0];
                 currentField += '[0]';
               }
-              reference = reference[part];
               currentField += '.' + part;
+
+              reference = reference[part];
+              if (reference === undefined) {
+                throw new Error(`@ensureMinimum could not find ${currentField}`);
+              }
             });
             const isValid = reference.length >= minimums.items;
             if (!isValid) {
