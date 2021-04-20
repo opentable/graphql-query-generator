@@ -24,6 +24,18 @@ jobs:
         os: [macOS-latest]
 
     steps:
+      - uses: actions/checkout@master
+
+      - name: Setup MSBuild path
+        uses: microsoft/setup-msbuild@v1.0.0
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.2
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+
       - name: Setup repo
         uses: actions/checkout@v2
 
