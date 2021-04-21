@@ -13,7 +13,7 @@ export default class GraphQLQuery {
 
   readonly name: string;
 
-  readonly directive: string;
+  readonly directives: string;
 
   readonly args: string;
 
@@ -27,16 +27,16 @@ export default class GraphQLQuery {
     let alias, name;
     this.type = type;
 
-    const regex = /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directive>@[\w]*\([^)]*\))*/g;
+    const regex = /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directives>@[\w]*.*)/g;
     let matches;
     if ((matches = regex.exec(query)) !== null) {
       const { groups } = matches;
       alias = groups.alias;
       name = groups.name;
-      this.directive = groups.directive;
+      this.directives = groups.directives;
       this.args = groups.args;
       this.pluggedInArgs = this.args;
-      this.query = query.replace(this.directive, '');
+      this.query = query.replace(this.directives, '');
 
       const paramRegex = /{{(?<parameter>[^"]*)}}/g;
 
@@ -68,32 +68,36 @@ export default class GraphQLQuery {
   }
 
   get tags(): string[] {
-    const tag = getRegexMatchGroup(/(name\s*:\s*['"](?<tag>[\w]*)['"])/g, this.directive, 'tag');
+    const tag = getRegexMatchGroup(/(name\s*:\s*['"](?<tag>[\w]*)['"])/g, this.directives, 'tag');
     return tag ? [tag] : [];
   }
 
   get isLast(): boolean {
-    const last = getRegexMatchGroup(/(?<last>@last)/g, this.directive, 'last');
+    const last = getRegexMatchGroup(/(?<last>@last)/g, this.directives, 'last');
     return Boolean(last);
   }
 
   get sla(): { responseTime: number } | null {
     const responseTime = getRegexMatchGroup(
-      /(maxResponseTime\s*:\s*['"]\s*(?<responseTime>.*)\s*['"])/g,
-      this.directive,
+      /(maxResponseTime\s*:\s*['"]\s*(?<responseTime>[^'"]*)\s*['"])/g,
+      this.directives,
       'responseTime'
     );
     return responseTime ? { responseTime: ms(responseTime) } : null;
   }
 
   get wait(): { waitTime: number } | null {
-    const waitTime = getRegexMatchGroup(/(waitTime\s*:\s*['"]\s*(?<waitTime>.*)\s*['"])/g, this.directive, 'waitTime');
+    const waitTime = getRegexMatchGroup(
+      /(waitTime\s*:\s*['"]\s*(?<waitTime>[^'"]*)\s*['"])/g,
+      this.directives,
+      'waitTime'
+    );
     return waitTime ? { waitTime: ms(waitTime) } : null;
   }
 
   get ensureMinimum(): { items: number; arrays: string[] } | null {
-    const items = getRegexMatchGroup(/(nItems\s*:\s*(?<items>[\w]*)\s*)/g, this.directive, 'items') || '1';
-    const stringArrays = getRegexMatchGroup(/(inArrays:\s*(?<arrays>[^)]*)\s*)/g, this.directive, 'arrays');
+    const items = getRegexMatchGroup(/(nItems\s*:\s*(?<items>[\w]*)\s*)/g, this.directives, 'items') || '1';
+    const stringArrays = getRegexMatchGroup(/(inArrays:\s*(?<arrays>[^)]*)\s*)/g, this.directives, 'arrays');
     if (!stringArrays) {
       return null;
     }
