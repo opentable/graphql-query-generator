@@ -13,7 +13,7 @@ export function getExamplesFrom(comment) {
   const result: Array<any> = [];
   let matches: any | null = null;
   const test = new RegExp(
-    /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directive>@[\w]*\([^)]*\))*/g
+    /(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directives>@[\w]*\([^)]*\))*/g
   );
 
   while ((matches = test.exec(examplesDescription)) && matches.length > 1) {
@@ -23,7 +23,7 @@ export function getExamplesFrom(comment) {
       groups.alias = undefined;
     }
     const query = `${groups.alias || ''}${groups.alias ? ':' : ''}${groups.name}${groups.args}${
-      groups.directive ? ' ' + groups.directive : ''
+      groups.directives ? ' ' + groups.directives : ''
     }`;
     result.push(query);
   }

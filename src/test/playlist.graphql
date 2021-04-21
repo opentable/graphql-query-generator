@@ -28,7 +28,7 @@ type Mutation {
   updatePlaylist(id: ID!, name: String!): Playlist
 
   # Examples:
-  # rp1: removePlaylist(id: "{{summerHitsPlaylist.id}}") @last
+  # rp1: removePlaylist(id: "{{summerHitsPlaylist.id}}") @wait(waitTime:"1s") @last
   # rp2: removePlaylist(id: "{{fallPlaylist.id}}") @last
   removePlaylist(id: ID!): Playlist
 }
