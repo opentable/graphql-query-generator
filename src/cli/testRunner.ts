@@ -158,8 +158,11 @@ function pluginParameters(inputString, query, responseData, queries) {
           );
           reference = targetArgs;
         } else {
-          reference = reference[part];
           currentField += '.' + part;
+          reference = reference[part];
+          if (reference === undefined) {
+            throw new Error(`pluginParameters could not find ${currentField}`);
+          }
         }
       });
 
