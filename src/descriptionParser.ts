@@ -1,5 +1,3 @@
-import GraphQLQuery from './queryClass';
-
 const examplesSection = new RegExp(/Example[s]?:/);
 
 export function getExamplesFrom(comment) {

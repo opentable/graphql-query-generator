@@ -22,7 +22,6 @@ describe('Query generation', () => {
   it('Generates multiple queries', () => {
     expect(queries.map((q) => q.name).filter((q) => q.match(/playlist/g)).length).toEqual(2);
   });
-
   it('Generates multiple mutations', () => {
     expect(mutations.map((q) => q.name).filter((q) => q.match(/createPlaylist/g)).length).toEqual(2);
   });
