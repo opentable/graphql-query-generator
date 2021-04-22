@@ -44,6 +44,16 @@ describe('Example description parser', () => {
       'metro(mId: 100)',
     ]);
   });
+  it('two mutations', () => {
+    expect(
+      getExamplesFrom(
+        'Examples:\nsummerPlaylist: createPlaylist(name: "Summer Mix") @sla(maxResponseTime: ".5s")\nfallPlaylist: createPlaylist(name: "Fall Mix")'
+      )
+    ).toEqual([
+      'summerPlaylist:createPlaylist(name: "Summer Mix") @sla(maxResponseTime: ".5s")',
+      'fallPlaylist:createPlaylist(name: "Fall Mix")',
+    ]);
+  });
   it('+NOFOLLOW after Examples: and newline', () => {
     expect(shouldFollow('Examples:country(\ncId: 1\n)\n+NOFOLLOW\n')).toEqual(false);
   });

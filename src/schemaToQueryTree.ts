@@ -98,15 +98,13 @@ export function buildQueryTreeFromField(
     const childFieldType = typeDictionary[childFieldTypeName];
 
     // FIX: Skipped logic is causing a problem with the second query fields not all coming back.
-    if (skipped.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) === -1) {
-      queriesForRootField.forEach((rootFieldQuery) => {
-        queryNode = queryNode || {};
-        queryNode[rootFieldQuery] = queryNode[rootFieldQuery] || [];
-        queryNode[rootFieldQuery].push(
-          buildQueryTreeFromField(childField, typeDictionary, skipped, fieldTypeDefinition)
-        );
-      });
-    }
+    //if (skipped.indexOf(getSkipKey(childFieldType, childField, fieldTypeDefinition)) === -1) {
+    queriesForRootField.forEach((rootFieldQuery) => {
+      queryNode = queryNode || {};
+      queryNode[rootFieldQuery] = queryNode[rootFieldQuery] || [];
+      queryNode[rootFieldQuery].push(buildQueryTreeFromField(childField, typeDictionary, skipped, fieldTypeDefinition));
+    });
+    // }
   });
 
   return queryNode;
