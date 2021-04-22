@@ -1,6 +1,8 @@
 import ms from 'ms';
 
 export default class GraphQLQuery {
+  readonly originalQuery: string;
+
   readonly query: string;
 
   public pluggedInQuery: string;
@@ -24,6 +26,7 @@ export default class GraphQLQuery {
   isVisited = false;
 
   constructor(query: string, type: string) {
+    this.originalQuery = query;
     let alias, name;
     this.type = type;
 
@@ -47,7 +50,7 @@ export default class GraphQLQuery {
       }
     } else {
       let matches;
-      if ((matches = /{\s*(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*}/g.exec(query)) !== null) {
+      if ((matches = /{?\s*(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*/g.exec(query)) !== null) {
         alias = matches.groups['alias'];
         name = matches.groups['name'];
       }
