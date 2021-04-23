@@ -75,6 +75,7 @@
     "chalk": "^4.1.0",
     "commander": "^6.1.0",
     "lodash": "^4.17.20",
+    "mime": "^1.4.1",
     "ms": "^2.1.2",
     "p-iteration": "^1.1.8",
     "terminal-kit": "^1.43.0"
