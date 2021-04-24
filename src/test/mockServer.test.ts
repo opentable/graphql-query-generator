@@ -15,13 +15,14 @@ beforeAll(async (done) => {
 
 describe('Test Runner', () => {
   it('Report should not have errors', () => {
-    expect(reports[0].errors.length).toBe(0);
+    expect(reports.filter((r) => r.errors.length > 0).length).toBe(0);
   });
 });
 describe('Query generation', () => {
   it('Generates multiple queries', () => {
     expect(queries.map((q) => q.name).filter((q) => q.match(/playlist/g)).length).toEqual(2);
   });
+
   it('Generates multiple mutations', () => {
     expect(mutations.map((q) => q.name).filter((q) => q.match(/createPlaylist/g)).length).toEqual(2);
   });
