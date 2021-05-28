@@ -64,7 +64,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       progressCallback && progressCallback(report.query.name, 0, orderedQueries.length);
 
       if (report.query.wait) {
-        console.log('sleeping (ms)', report.query.wait.waitTime);
+        // console.log('sleeping (ms)', report.query.wait.waitTime);
         await sleep(report.query.wait.waitTime);
       }
 
@@ -153,6 +153,9 @@ function pluginParameters(inputString, query, responseData, queries) {
         } else if (part === '$ARGS') {
           // Get target query
           const targetQuery = queries.find((q) => q.alias === alias);
+          if (targetQuery === undefined) {
+            throw new Error(`pluginParameters could not find ${currentField}`);
+          }
           const targetArgs = eval(
             (targetQuery.pluggedInArgs || targetQuery.args).replace('(', '({').replace(')', '})')
           );
