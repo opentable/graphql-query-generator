@@ -37,7 +37,7 @@ async function main() {
   const reportData = await runGraphQLTests(server || serverUrl, (name, percentComplete, totalQueries) => {
     if (!progressBar) {
       progressBar = term.progressBar({
-        width: 80,
+        width: 100,
         title: 'GraphQL API Tests:',
         eta: true,
         percent: true,
