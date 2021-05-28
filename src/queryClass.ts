@@ -114,7 +114,7 @@ export default class GraphQLQuery {
   }
 
   get signature(): string {
-    return `${this.name}${this.pluggedInArgs || this.args || ''}`;
+    return `${this.alias ? this.alias + ' : ' : this.alias}${this.name}${this.pluggedInArgs || this.args || ''}`;
   }
 
   public toString = (): string => `${this.query}`;
