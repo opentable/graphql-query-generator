@@ -157,7 +157,6 @@ function pluginParameters(inputString, query, responseData, queries) {
           if (targetQuery === undefined) {
             throw new Error(`pluginParameters could not find ${currentField}`);
           }
-          console.log('TARGET QUERY', targetQuery.pluggedInArgs, targetQuery.args);
           const targetArgs = eval(
             (targetQuery.pluggedInArgs || targetQuery.args).replace('(', '({').replace(')', '})')
           );
@@ -169,13 +168,11 @@ function pluginParameters(inputString, query, responseData, queries) {
             throw new Error(`pluginParameters could not find ${currentField}`);
           }
         }
-        console.log('PART/REFERENCE', part, reference);
       });
 
       const value = reference;
       // Replace {{parameter}} with actual value
       pluggedInQuery = pluggedInQuery.replace(`{{${param}}}`, value);
-      console.log('QUERY', pluggedInQuery);
     } catch (ex) {
       console.log(ex);
       throw Error(`could not find {{${param}}}`);
