@@ -64,7 +64,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       progressCallback && progressCallback(report.query.name, 0, orderedQueries.length);
 
       if (report.query.wait) {
-        console.log('sleeping (ms)', report.query.wait.waitTime);
+        // console.log('sleeping (ms)', report.query.wait.waitTime);
         await sleep(report.query.wait.waitTime);
       }
 
@@ -81,11 +81,11 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
 
       report.run.meetsSLA = Boolean(report.run.ms <= (sla ? sla.responseTime : 120000));
 
-      const hasErrors = response.errors;
+      const errors = response.errors;
 
-      if (hasErrors) {
-        console.log(response.errors);
-        response.errors.map((error) => logErrorToReport(report, 'API Error: ' + error.message));
+      if (errors) {
+        console.log('ERRORS: ', errors);
+        errors.map((error) => logErrorToReport(report, 'API Error: ' + error.message));
       } else {
         // Store responses in memory so they can be used for an argument to another query/mutation call
         responseData = { ...responseData, ...response.data };
@@ -150,9 +150,13 @@ function pluginParameters(inputString, query, responseData, queries) {
         if (Array.isArray(reference)) {
           reference = reference[0];
           currentField += '[0]';
-        } else if (part === '$ARGS') {
+        }
+        if (part === '$ARGS') {
           // Get target query
           const targetQuery = queries.find((q) => q.alias === alias);
+          if (targetQuery === undefined) {
+            throw new Error(`pluginParameters could not find ${currentField}`);
+          }
           const targetArgs = eval(
             (targetQuery.pluggedInArgs || targetQuery.args).replace('(', '({').replace(')', '})')
           );

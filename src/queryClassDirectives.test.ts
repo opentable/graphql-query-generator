@@ -6,6 +6,7 @@ describe('Query class directives', () => {
     expect(query.name).toEqual('playlist');
     expect(query.directives).toEqual(undefined);
     expect(query.query).toEqual('{ playlist(id: "123") { id name } }');
+    expect(query.args).toEqual('(id: "123")');
     expect(query.isLast).toEqual(false);
     expect(query.sla).toEqual(null);
     expect(query.wait).toEqual(null);
@@ -22,6 +23,7 @@ describe('Query class directives', () => {
     expect(query.query).toEqual(
       '{ pl1:playlist(id: "{{summerPlaylist.id}}") { id  name  tracks { id  title  artist  album   }  } }'
     );
+    expect(query.args).toEqual('(id: "{{summerPlaylist.id}}")');
     expect(query.isLast).toEqual(false);
     expect(query.sla).toEqual({ responseTime: 1 });
     expect(query.wait).toEqual(null);
@@ -39,6 +41,7 @@ describe('Query class directives', () => {
     expect(query.query).toEqual(
       '{ summerPlaylist: createPlaylist(name: "Summer Mix") { id  name  tracks { id  title  artist  album   }  } }'
     );
+    expect(query.args).toEqual('(name: "Summer Mix")');
     expect(query.isLast).toEqual(false);
     expect(query.sla).toEqual({ responseTime: 500 });
     expect(query.wait).toEqual(null);
@@ -48,12 +51,13 @@ describe('Query class directives', () => {
 
   it('Two directives', () => {
     const query = new GraphQLQuery(
-      '{ pl1: playlist(id: "123", name: "test") @sla(maxResponseTime: "1s") @last { id name } }',
+      '{ pl1: playlist(id: "123", name: "test") @sla(maxResponseTime: "1s") @last() { id name } }',
       'query'
     );
     expect(query.name).toEqual('playlist');
-    expect(query.directives).toEqual('@sla(maxResponseTime: "1s") @last');
+    expect(query.directives).toEqual('@sla(maxResponseTime: "1s") @last()');
     expect(query.query).toEqual('{ pl1: playlist(id: "123", name: "test") { id name } }');
+    expect(query.args).toEqual('(id: "123", name: "test")');
     expect(query.isLast).toEqual(true);
     expect(query.sla).toEqual({ responseTime: 1000 });
     expect(query.wait).toEqual(null);
@@ -68,6 +72,7 @@ describe('Query class directives', () => {
     expect(query.name).toEqual('playlist');
     expect(query.directives).toEqual('@wait(waitTime: "3s") @sla(maxResponseTime: "2s") @last');
     expect(query.query).toEqual('{ playlist(name: "test") { id name } }');
+    expect(query.args).toEqual('(name: "test")');
     expect(query.isLast).toEqual(true);
     expect(query.sla).toEqual({ responseTime: 2000 });
     expect(query.wait).toEqual({ waitTime: 3000 });
@@ -84,12 +89,11 @@ describe('Query class directives', () => {
     );
     expect(query.name).toEqual('playlist');
     expect(query.query).toEqual('{ playlist(name: "test") { id name } }');
+    expect(query.args).toEqual('(name: "test")');
     expect(query.isLast).toEqual(true);
     expect(query.sla).toEqual({ responseTime: 2000 });
     expect(query.wait).toEqual({ waitTime: 3000 });
     expect(query.alias).toEqual('');
     expect(query.ensureMinimum).toEqual({ arrays: ['playlist.tracks'], items: 2 });
   });
-
-  ('{ pl1:playlist(id: "{{summerPlaylist.id}}") @sla(maxResponseTime: "1ms") { id  name  tracks { id  title  artist  album   }  } }');
 });

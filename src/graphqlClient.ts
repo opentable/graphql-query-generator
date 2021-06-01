@@ -20,17 +20,18 @@ export async function queryClient(server: string | IMockServer, query: string, t
   const finalQuery = `${type === 'MUTATION' ? 'mutation ' : ''}${query}`;
 
   if (isString) {
-    const response = await axios({
-      url: server as string,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      data: createQuery(finalQuery, type),
-    });
-
-    if (response.status !== 200) {
+    try {
+      const response = await axios({
+        url: server as string,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        data: createQuery(finalQuery, type),
+      });
       return response.data;
+    } catch (error) {
+      console.error('axios error', error);
+      return error.response.data || { errors: { message: error.stack } } || error;
     }
-    return response.data;
   } else {
     const response = await (server as IMockServer).query(finalQuery, {});
     return response;

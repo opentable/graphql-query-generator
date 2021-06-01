@@ -37,7 +37,6 @@ async function main() {
   const reportData = await runGraphQLTests(server || serverUrl, (name, percentComplete, totalQueries) => {
     if (!progressBar) {
       progressBar = term.progressBar({
-        width: 80,
         title: 'GraphQL API Tests:',
         eta: true,
         percent: true,
@@ -64,7 +63,7 @@ async function main() {
           ? ''
           : `${report.errors.length ? '\n\n' + report.errors[0] + '\n' : ''}${
               !report.run.meetsSLA ? `\n\nSLA response time ${report.query.sla.responseTime}ms exceeded\n` : ''
-            }${program.verbose ? '\n\n' + report.query.signature + '\n' : ''}`
+            }`
       }\n`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),
@@ -72,7 +71,6 @@ async function main() {
       hasBorder: false,
       contentHasMarkup: true,
       textAttr: { bgColor: 'default' },
-      width: 80,
       fit: true,
     }
   );

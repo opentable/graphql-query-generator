@@ -30,7 +30,7 @@ export default class GraphQLQuery {
     let alias, name;
     this.type = type;
 
-    const regex = /{\s*(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directives>@[^{]*)\s*(?<fields>{.*}\s*)}/g;
+    const regex = /{\s*(?<alias>[\w]*)?\s*:?\s*(?<name>[\w]*)\s*(?<args>\([^)]*\))\s*(?<directives>@[^{]*\s*)?(?<fields>{.*}\s*)}/g;
     let matches;
     if ((matches = regex.exec(query)) !== null) {
       const { groups } = matches;
@@ -39,7 +39,7 @@ export default class GraphQLQuery {
       this.args = groups.args;
       this.pluggedInArgs = this.args;
       this.query = query.replace(groups.directives, '');
-      this.directives = groups.directives.substr(0, groups.directives.length - 1);
+      this.directives = groups.directives?.substr(0, groups.directives.length - 1);
 
       const paramRegex = /{{(?<parameter>[^"]*)}}/g;
 
@@ -114,7 +114,7 @@ export default class GraphQLQuery {
   }
 
   get signature(): string {
-    return `${this.name}${this.pluggedInArgs || this.args || ''}`;
+    return `${this.alias ? this.alias + ' : ' : this.alias}${this.name}${this.pluggedInArgs || this.args || ''}`;
   }
 
   public toString = (): string => `${this.query}`;
