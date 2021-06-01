@@ -55,7 +55,7 @@ async function main() {
   term.table(
     reportData.map((report) => [
       report.status === 'passed' && report.run.meetsSLA ? '^G√ ' : '',
-      `^${report.status === 'passed' && report.run.meetsSLA ? '-' : 'R'}${
+      `^${report.status === 'passed' && report.run.meetsSLA ? 'R' : 'R'}${
         report.query.signature || report.query.query
       } ${
         report.status === 'passed' && report.run.meetsSLA && !program.verbose
