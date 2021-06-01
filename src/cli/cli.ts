@@ -51,7 +51,6 @@ async function main() {
       progressBar.itemDone(name);
     }
   });
-
   term.bold('\n\nAPIs\n\n');
   term.table(
     reportData.map((report) => [
