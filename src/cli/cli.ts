@@ -12,6 +12,30 @@ let progressBar;
 process.title = 'graphql-service-tester';
 
 async function main() {
+  // term.bgBlack().bold('\n\nAPIs\n\n');
+  term.bgBlack().table(
+    [
+      [
+        '^G√',
+        `sp2 : searchPlaylists(partnerId: "shf", fields: { type: SEQUENTIAL } term: "test", sort: [{ field: PLAYLIST_NAME, direction: DESC}])`,
+        '1044ms',
+      ],
+      [
+        '',
+        `^Rsp2 : searchPlaylists(partnerId: "shf", fields: { type: SEQUENTIAL } term: "test", sort: [{ field: PLAYLIST_NAME, direction: DESC}])`,
+        '',
+      ],
+    ],
+    {
+      hasBorder: true,
+      borderChars: 'lightRounded',
+      borderAttr: { color: 'blue' },
+      contentHasMarkup: true,
+      textAttr: { bgColor: 'default' },
+      fit: true,
+    }
+  );
+
   let serverUrl;
   program
     .version(version)
@@ -55,21 +79,24 @@ async function main() {
   term.table(
     reportData.map((report) => [
       report.status === 'passed' && report.run.meetsSLA ? '^G√ ' : '',
-      `^${report.status === 'passed' && report.run.meetsSLA ? 'R' : 'R'}${
+      `${report.status === 'passed' && report.run.meetsSLA ? '' : '^R'}${
         report.query.signature || report.query.query
       } ${
         report.status === 'passed' && report.run.meetsSLA && !program.verbose
           ? ''
           : `${report.errors.length ? '\n\n' + report.errors[0] + '\n' : ''}${
               !report.run.meetsSLA ? `\n\nSLA response time ${report.query.sla.responseTime}ms exceeded\n` : ''
-            }`
+            }${program.verbose ? '\n\n' + report.query.signature + '\n' : ''}`
       }\n`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),
     {
-      hasBorder: false,
+      hasBorder: true,
+      borderChars: 'lightRounded',
+      borderAttr: { color: 'blue' },
       contentHasMarkup: true,
       textAttr: { bgColor: 'default' },
+      width: 80,
       fit: true,
     }
   );
