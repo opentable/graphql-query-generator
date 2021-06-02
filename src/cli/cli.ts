@@ -12,30 +12,6 @@ let progressBar;
 process.title = 'graphql-service-tester';
 
 async function main() {
-  // term.bgBlack().bold('\n\nAPIs\n\n');
-  term.bgBlack().table(
-    [
-      [
-        '^G√',
-        `sp2 : searchPlaylists(partnerId: "shf", fields: { type: SEQUENTIAL } term: "test", sort: [{ field: PLAYLIST_NAME, direction: DESC}])`,
-        '1044ms',
-      ],
-      [
-        '',
-        `^Rsp2 : searchPlaylists(partnerId: "shf", fields: { type: SEQUENTIAL } term: "test", sort: [{ field: PLAYLIST_NAME, direction: DESC}])`,
-        '',
-      ],
-    ],
-    {
-      hasBorder: true,
-      borderChars: 'lightRounded',
-      borderAttr: { color: 'blue' },
-      contentHasMarkup: true,
-      textAttr: { bgColor: 'default' },
-      fit: true,
-    }
-  );
-
   let serverUrl;
   program
     .version(version)
