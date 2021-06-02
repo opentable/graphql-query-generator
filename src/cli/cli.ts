@@ -86,7 +86,7 @@ async function main() {
           ? ''
           : `${report.errors.length ? '\n\n' + report.errors[0] + '\n' : ''}${
               !report.run.meetsSLA ? `\n\nSLA response time ${report.query.sla.responseTime}ms exceeded\n` : ''
-            }${program.verbose ? '\n\n' + report.query.signature + '\n' : ''}`
+            }${program.verbose ? '' : ''}`
       }\n`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
     ]),
