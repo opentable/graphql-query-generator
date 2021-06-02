@@ -29,7 +29,7 @@ export async function queryClient(server: string | IMockServer, query: string, t
       });
       return response.data;
     } catch (error) {
-      console.error('axios error', error);
+      // console.error('axios error', error);
       return error.response.data || { errors: { message: error.stack } } || error;
     }
   } else {

@@ -1,6 +1,6 @@
 import GraphQLQuery from './queryClass';
 
-describe('Query class directives', () => {
+describe('Query class', () => {
   it('No directive', () => {
     const query = new GraphQLQuery('{ playlist(id: "123") { id name } }', 'query');
     expect(query.name).toEqual('playlist');
@@ -95,5 +95,19 @@ describe('Query class directives', () => {
     expect(query.wait).toEqual({ waitTime: 3000 });
     expect(query.alias).toEqual('');
     expect(query.ensureMinimum).toEqual({ arrays: ['playlist.tracks'], items: 2 });
+  });
+  it('String response', () => {
+    const query = new GraphQLQuery(
+      '{ removedStation:removeStations(partnerId:"neu", stationIds: ["{{updatedStation.id}}"]) @last() }',
+      'mutation'
+    );
+    expect(query.directives).toEqual('@last()');
+    expect(query.name).toEqual('removeStations');
+    expect(query.query).toEqual(
+      '{ removedStation:removeStations(partnerId:"neu", stationIds: ["{{updatedStation.id}}"]) }'
+    );
+    expect(query.args).toEqual('(partnerId:"neu", stationIds: ["{{updatedStation.id}}"])');
+    expect(query.isLast).toEqual(true);
+    expect(query.alias).toEqual('removedStation');
   });
 });

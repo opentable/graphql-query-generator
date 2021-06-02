@@ -84,7 +84,7 @@ export async function runGraphQLTests(server: string | IMockServer, progressCall
       const errors = response.errors;
 
       if (errors) {
-        console.log('ERRORS: ', errors);
+        // console.log('ERRORS: ', errors);
         errors.map((error) => logErrorToReport(report, 'API Error: ' + error.message));
       } else {
         // Store responses in memory so they can be used for an argument to another query/mutation call
@@ -174,7 +174,7 @@ function pluginParameters(inputString, query, responseData, queries) {
       // Replace {{parameter}} with actual value
       pluggedInQuery = pluggedInQuery.replace(`{{${param}}}`, value);
     } catch (ex) {
-      console.log(ex);
+      // console.log(ex);
       throw Error(`could not find {{${param}}}`);
     }
   });
