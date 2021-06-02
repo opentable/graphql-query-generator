@@ -80,7 +80,7 @@
     "ms": "^2.1.2",
     "p-iteration": "^1.1.8",
     "qs": "^6.3.2",
-    "terminal-kit": "^2.1.5"
+    "terminal-kit": "^1.43.0"
   },
   "engines": {
     "node": ">10.0"
