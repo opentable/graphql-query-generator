@@ -1,6 +1,6 @@
 {
   "name": "graphql-service-tester",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Tests GraphQL service queries and mutations via schema introspection",
   "main": "./bin/cli.js",
   "bin": {
