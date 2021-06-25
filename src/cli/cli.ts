@@ -61,7 +61,7 @@ async function main() {
         report.status === 'passed' && report.run.meetsSLA && !program.verbose
           ? ''
           : `${report.errors.length ? '\n\n' + report.errors[0] + '\n' : ''}${
-              !report.run.meetsSLA ? `\n\nSLA response time ${report.query.sla.responseTime}ms exceeded\n` : ''
+              !report.run.meetsSLA ? `\n\nSLA response time ${report.query.sla?.responseTime}ms exceeded\n` : ''
             }${program.verbose ? '' : ''}`
       }\n`,
       `${report.run.meetsSLA ? '^G' : '^R'}${report.run.ms}ms `,
