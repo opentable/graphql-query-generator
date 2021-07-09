@@ -3,6 +3,9 @@ export default `{
     queryType {
       name
     }
+    mutationType {
+      name
+    }
     types {
       name
       kind

@@ -1,24 +1,30 @@
-import schemaToQueryTree  from './schemaToQueryTree';
 import * as _ from 'lodash';
+import { getQueryFields, getQueryFieldsModes } from './schemaToQueryTree';
 
-const { getQueryFields, getQueryFieldsModes } = schemaToQueryTree;
+export default function coverageCalculator(
+  rootName: string,
+  schema
+): { coverageRatio: number; notCoveredFields: string[] } {
+  if (!rootName || !schema[rootName]) {
+    return {
+      coverageRatio: 1,
+      notCoveredFields: [],
+    };
+  }
 
-/**
- * @example
- *   exports.default('ObjectContainingTwoDeeplyNestedObjects', require('../test/unit/mockData'))
- *   // => { coverageRatio: 1, notCoveredFields: []}
- *   exports.default('DeeplyNestedObjectWithPartialNoFollow', require('../test/unit/mockData'))
- *   // => { coverageRatio: 0.5, notCoveredFields: ["DeeplyNestedObject___NOFollowPart", "DeeplyNestedObject___DeeplyNestedObject___DeepNest", "DeeplyNestedObject___ObjectField___NotSoDeepNest"]}
- */
-export default function coverageCalculator (rootName, schema) {
   const sharedSkipListForGetQueryableFields = [];
-  const sharedSkipListForGetAllFields = []
+  const sharedSkipListForGetAllFields = [];
 
   let allQuerableFields = [];
   let allAllFields = [];
 
   _.forIn(schema[rootName].fields, (field) => {
-    const queryableFields = getQueryFields(getQueryFieldsModes.QUERYABLE_FIELDS, field, schema, sharedSkipListForGetQueryableFields);
+    const queryableFields = getQueryFields(
+      getQueryFieldsModes.QUERYABLE_FIELDS,
+      field,
+      schema,
+      sharedSkipListForGetQueryableFields
+    );
     const allFields = getQueryFields(getQueryFieldsModes.ALL_FIELDS, field, schema, sharedSkipListForGetAllFields);
     allQuerableFields = _.union(allQuerableFields, queryableFields);
     allAllFields = _.union(allAllFields, allFields);
@@ -26,6 +32,6 @@ export default function coverageCalculator (rootName, schema) {
 
   return {
     coverageRatio: allQuerableFields.length / allAllFields.length,
-    notCoveredFields: _.difference(allAllFields, allQuerableFields)
+    notCoveredFields: _.difference(allAllFields, allQuerableFields),
   };
-};
+}

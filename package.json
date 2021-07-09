@@ -1,47 +1,88 @@
 {
-  "name": "graphql-query-generator",
-  "version": "0.5.5",
-  "description": "Generates queries from the GraphQL endpoint via schema introspection.",
-  "main": "index.js",
+  "name": "graphql-service-tester",
+  "version": "1.2.7",
+  "description": "Tests GraphQL service queries and mutations via schema introspection",
+  "main": "./bin/cli.js",
   "bin": {
-    "gql-test": "./bin/cli.js"
+    "graphql-service-tester": "./bin/cli.js"
   },
   "directories": {
-    "test": "tests"
+    "test": "src/test"
   },
   "scripts": {
-    "test": "npm run build-ts && npm run jsdoctest && mocha test/ --recursive",
+    "test": "jest",
+    "dev": "nodemon",
+    "playlist": "node ./bin/cli.js playlist",
+    "playlist:debug": "tsc; node ./bin/cli.js playlist",
+    "local": "tsc; node ./bin/cli.js http://localhost:3000/graphql -v",
     "build-ts": "tsc",
-    "watch-ts": "tsc -w",
-    "jsdoctest": "mocha --require jsdoctest lib/"
+    "watch-ts": "tsc -w"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/opentable/graphql-query-generator.git"
+    "url": "git+https://github.com/chad-superhifi/graphql-service-tester"
   },
-  "keywords": [],
-  "author": "Piotr Bazydlo <piotr.bazydlo@gmail.com>",
-  "license": "ISC",
+  "keywords": [
+    "graphql",
+    "service",
+    "API",
+    "endpoint",
+    "query",
+    "mutation",
+    "smoke test",
+    "test",
+    "schema"
+  ],
+  "author": "Chad Bumstead <cbumstead@gmail.com>",
+  "contributors": [
+    "Piotr Bazydlo <piotr.bazydlo@gmail.com>",
+    "Dillon Cordova <dillontcordova@gmail.com>"
+  ],
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/opentable/graphql-query-generator/issues"
+    "url": "https://github.com/chad-superhifi/graphql-service-tester/issues"
   },
-  "homepage": "https://github.com/opentable/graphql-query-generator#readme",
+  "homepage": "https://github.com/chad-superhifi/graphql-service-tester#readme",
   "devDependencies": {
-    "@types/node": "^8.0.28",
-    "chai": "^3.5.0",
-    "express-graphql": "^0.6.6",
-    "jsdoctest": "^1.7.0",
-    "mocha": "^3.3.0",
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.11.8",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "express-graphql": "^0.11.0",
+    "graphql": "^15.3.0",
+    "graphql-tag": "^2.11.0",
+    "graphql-tools": "^6.2.4",
+    "jest": "^26.5.2",
+    "nodemon": "^2.0.6",
+    "prettier": "2.1.2",
+    "short-uuid": "^4.1.0",
     "swapi-graphql": "0.0.6",
-    "typescript": "^2.5.2",
-    "uglifyjs": "2.4.10"
+    "ts-jest": "^26.4.1",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.2.4",
+    "uglifyjs": "2.4.11"
   },
   "dependencies": {
-    "chalk": "^1.1.3",
-    "commander": "^2.9.0",
-    "fetch": "^1.1.0",
-    "graphql": "^0.9.2",
-    "lodash": "^4.17.4",
-    "node-fetch": "^1.6.3"
+    "axios": "^0.21.1",
+    "chalk": "^4.1.0",
+    "commander": "^6.1.0",
+    "fresh": "^0.5.2",
+    "lodash": "^4.17.20",
+    "mime": "^1.4.1",
+    "ms": "^2.1.2",
+    "p-iteration": "^1.1.8",
+    "qs": "^6.3.2",
+    "terminal-kit": "^1.43.0"
+  },
+  "engines": {
+    "node": ">10.0"
   }
 }

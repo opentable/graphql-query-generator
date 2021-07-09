@@ -1,0 +1,30 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Test Sample Playlist",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/bin/cli.js",
+      "args": ["-v", "playlist"],
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/lib/**/*.js"],
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Localhost 3000",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/bin/cli.js",
+      "args": ["-v", "http://localhost:3000/graphql"],
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/lib/**/*.js"],
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}
