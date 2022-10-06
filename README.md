@@ -1,5 +1,7 @@
 [![build](https://api.travis-ci.org/opentable/graphql-query-generator.svg?branch=master)](https://travis-ci.org/opentable/graphql-query-generator)
 
+**This repo is no longer maintained**. Feel free to fork and enjoy it, but no further development is anticipated.
+
 # GraphQL Query Generator
 GraphQL Query Generator is a library/tool that helps you easily test your GraphQL endpoints using introspection!
 
